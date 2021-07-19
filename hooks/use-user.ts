@@ -2,9 +2,14 @@ import { useMemo } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { getUserData } from "api/api";
 
-export function useUser(name) {
+export function useUser(name, initialData) {
   const queryClient = useQueryClient();
   const key = useMemo(() => ["userData", name], [name]);
+  const option = useMemo(() => {
+    const root = { refetchOnWindowFocus: false };
+    if (initialData) return { ...root, initialData: JSON.parse(initialData) };
+    return root;
+  }, [initialData]);
 
   const { data: userData } = useQuery(
     key,
@@ -15,9 +20,7 @@ export function useUser(name) {
 
       return getUserData(name);
     },
-    {
-      refetchOnWindowFocus: false,
-    }
+    option
   );
 
   return userData;
