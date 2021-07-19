@@ -56,22 +56,6 @@ const Home = ({ eventData, calendarData }) => {
     };
   }, [endInterval, startInterval, setMidnight, setSix]);
 
-  useEffect(() => {
-    (function (l) {
-      if (l.search[1] === "/") {
-        var decoded = l.search
-          .slice(1)
-          .split("&")
-          .map(function (s) {
-            return s.replace(/~and~/g, "&");
-          })
-          .join("?");
-
-        history.replace(decoded + l.hash);
-      }
-    })(window.location);
-  }, [history]);
-
   return (
     <Layout page="/">
       <Styled.Container>
