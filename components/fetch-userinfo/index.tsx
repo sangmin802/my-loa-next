@@ -18,8 +18,8 @@ import {
 } from "components/";
 import * as Styled from "styles/user-info.style";
 
-const FetchUserInfo = ({ name, history, initialData }) => {
-  const userData = useUser(name, initialData);
+const FetchUserInfo = ({ name, history }) => {
+  const userData = useUser(name);
   const [subNav, setSubNav] = useState(0);
   const [mainNav, setMainNav] = useState(0);
   const [dialog, setDialog] = useState(null);
