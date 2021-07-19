@@ -161,10 +161,14 @@ const FetchEvent = ({ initialData }) => {
   );
 };
 
-export async function getStaticProps() {
-  const eventData = JSON.stringify(await getEventData());
-  const calendarData = JSON.stringify(await getCalendarData());
-  return { props: { eventData, calendarData } };
+export async function getServerSideProps() {
+  try {
+    const eventData = JSON.stringify(await getEventData());
+    const calendarData = JSON.stringify(await getCalendarData());
+    return { props: { eventData, calendarData } };
+  } catch {
+    return { props: { eventData: null, calendarData: null } };
+  }
 }
 
 // pre-rendering을 위해, homeData를 받아올 때 서버에서는 DOMParser를 인식하지 못함
