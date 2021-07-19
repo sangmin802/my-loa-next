@@ -18,7 +18,6 @@ import {
   AsyncBoundary,
   ErrorFallback,
 } from "components/";
-import { useRouter } from "next/router";
 import Layout from "layout/index";
 import { interval } from "utils/events/interval";
 import * as Styled from "../styles/home.style";
@@ -27,7 +26,6 @@ import { getCalendarData, getEventData } from "api/api";
 const Home = ({ eventData, calendarData }) => {
   const [isMidnight, setMidnight] = useState(new Date());
   const [isSix, setSix] = useState(new Date());
-  const history = useRouter();
 
   const updateTime = useCallback(arr => {
     const [setMidnight, setSix] = arr;
