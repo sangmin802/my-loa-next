@@ -30,3 +30,6 @@ export { default as AsyncBoundary } from "./async-boundary";
 export { default as ErrorBoundary } from "./error-boundary";
 export { default as ErrorFallback } from "./error-fallback";
 export { default as CustomSuspense } from "./custom-suspense";
+export { default as FetchEvent } from "./fetch-event";
+export { default as FetchCalendar } from "./fetch-calendar";
+export { default as FetchUserInfo } from "./fetch-userinfo";
