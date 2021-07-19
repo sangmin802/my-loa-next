@@ -8,8 +8,6 @@ import CalenderData from "models/calendarData";
 
 export const getUserData = async (name): Promise<UserInfo> => {
   try {
-    if (!isValidUser(name)) throw "유효하지 않은 사용자명 입니다.";
-
     const { data } = await axios({
       url: `${PROXY}loa-hands/userInfo`,
       method: "post",
@@ -92,8 +90,3 @@ export default {
     }
   },
 };
-
-function isValidUser(name) {
-  if (!name) return false;
-  return true;
-}
