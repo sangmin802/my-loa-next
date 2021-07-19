@@ -7,9 +7,8 @@ import {
 } from "components/";
 import Layout, { HeaderLayout } from "layout/index";
 import { useRouter } from "next/router";
-import { getUserData } from "api/api";
 
-const UserInfo = ({ userData }) => {
+const UserInfo = () => {
   const history = useRouter();
   const { name } = history.query;
 
@@ -20,21 +19,11 @@ const UserInfo = ({ userData }) => {
         errorFallback={<HeaderLayout children={<ErrorFallback />} />}
       >
         <HeaderLayout>
-          <FetchUserInfo name={name} history={history} initialData={userData} />
+          <FetchUserInfo name={name} history={history} />
         </HeaderLayout>
       </AsyncBoundary>
     </Layout>
   );
 };
 
-export async function getServerSideProps(context) {
-  const name = context.query.name;
-  try {
-    const userData = JSON.stringify(await getUserData(name));
-    return { props: { userData } };
-  } catch {
-    return { props: { userData: null } };
-  }
-}
-
-export default React.memo(UserInfo, () => false);
+export default React.memo(UserInfo, () => true);
