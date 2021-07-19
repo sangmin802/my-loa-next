@@ -21,6 +21,7 @@ const Header = ({ resetBoundary }: PropsWithChildren<IHeader>) => {
       textInput.current.value = null;
 
       if (isEmpty) return;
+
       history.replace(`/userInfo/${name}`);
     },
     [textInput, history, resetBoundary]
