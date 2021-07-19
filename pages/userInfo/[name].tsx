@@ -22,8 +22,9 @@ import Layout, { HeaderLayout } from "layout/index";
 import { useUser } from "hooks/use-user";
 import { useRouter } from "next/router";
 import * as Styled from "../../styles/user-info.style";
+import { getUserData } from "api/api";
 
-const UserInfo = () => {
+const UserInfo = ({ userData }) => {
   const history = useRouter();
   const { name } = history.query;
 
@@ -34,15 +35,15 @@ const UserInfo = () => {
         errorFallback={<HeaderLayout children={<ErrorFallback />} />}
       >
         <HeaderLayout>
-          <FetchUserInfo name={name} history={history} />
+          <FetchUserInfo name={name} history={history} initialData={userData} />
         </HeaderLayout>
       </AsyncBoundary>
     </Layout>
   );
 };
 
-const FetchUserInfo = ({ name, history }) => {
-  const userData = useUser(name);
+const FetchUserInfo = ({ name, history, initialData }) => {
+  const userData = useUser(name, initialData);
   const [subNav, setSubNav] = useState(0);
   const [mainNav, setMainNav] = useState(0);
   const [dialog, setDialog] = useState(null);
@@ -228,5 +229,15 @@ const FetchUserInfo = ({ name, history }) => {
     </Styled.Container>
   );
 };
+
+export async function getServerSideProps(context) {
+  const name = context.query.name;
+  try {
+    const userData = JSON.stringify(await getUserData(name));
+    return { props: { userData } };
+  } catch {
+    return { props: { userData: null } };
+  }
+}
 
 export default React.memo(UserInfo, () => false);
