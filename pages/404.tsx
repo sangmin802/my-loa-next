@@ -1,8 +1,7 @@
 const Custom404 = () => {
   if (typeof window === "undefined") return null;
+  const l = window.location;
   let pathSegmentsToKeep = 0;
-
-  let l = window.location;
   l.replace(
     l.protocol +
       "//" +
@@ -12,7 +11,7 @@ const Custom404 = () => {
         .split("/")
         .slice(0, 1 + pathSegmentsToKeep)
         .join("/") +
-      "/loa-hands/?/" +
+      "/?/" +
       l.pathname
         .slice(1)
         .split("/")
