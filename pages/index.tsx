@@ -9,13 +9,12 @@ import {
   OCEAN_ACT,
   PHANTOM_SHIP,
 } from "json/json";
-import { useCalendar } from "hooks/use-calendar";
-import { useEvent } from "hooks/use-event";
 import {
+  FetchEvent,
+  FetchCalendar,
   SectionContainer,
   TimerContainer,
   LoadingSpinner,
-  Event,
   AsyncBoundary,
   ErrorFallback,
 } from "components/";
@@ -121,43 +120,6 @@ const Home = ({ eventData, calendarData }) => {
         </Styled.Section>
       </Styled.Container>
     </Layout>
-  );
-};
-
-const FetchCalendar = ({ isMidnight, initialData }) => {
-  const yoil = isMidnight.getDay();
-  const calendarData = useCalendar(isMidnight.getDate(), initialData);
-  const isWeek = 6 > yoil && yoil > 0;
-  const title = useMemo(() => {
-    if (isWeek) return "11:00 ~ 21:00";
-    return "09:00 ~ 23:00";
-  }, [yoil, isWeek]);
-
-  return (
-    <Styled.Section>
-      <SectionContainer title={title}>
-        <TimerContainer
-          data={
-            isWeek ? calendarData.calendar[0] : calendarData.calendar[1] ?? []
-          }
-          rerenderKey={isMidnight}
-        />
-      </SectionContainer>
-    </Styled.Section>
-  );
-};
-
-const FetchEvent = ({ initialData }) => {
-  const eventData = useEvent(initialData);
-
-  return (
-    <Styled.Content type="event">
-      {eventData.events.map((event, index) => (
-        <Styled.Event key={`event${index}`}>
-          <Event event={event} />
-        </Styled.Event>
-      ))}
-    </Styled.Content>
   );
 };
 
