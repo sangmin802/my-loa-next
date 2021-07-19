@@ -24,7 +24,8 @@ export const getUserData = async (name): Promise<UserInfo> => {
     const user: UserInfo = new UserInfo(body, expedition, col);
     return user;
   } catch (err) {
-    const message = err?.response?.data?.message ?? "네트워크 에러입니다.";
+    let message = err?.response?.data?.message ?? "네트워크 에러입니다.";
+    if (typeof err == "string") message = err;
     throw new Error(message);
   }
 };
