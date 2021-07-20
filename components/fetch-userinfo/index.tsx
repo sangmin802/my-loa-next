@@ -18,7 +18,7 @@ import {
 } from "components/";
 import * as Styled from "styles/user-info.style";
 
-const FetchUserInfo = ({ name, history }) => {
+const FetchUserInfo = ({ name, router }) => {
   const userData = useUser(name);
   const [subNav, setSubNav] = useState(0);
   const [mainNav, setMainNav] = useState(0);
@@ -77,10 +77,10 @@ const FetchUserInfo = ({ name, history }) => {
 
   const setUserDataHandler = useCallback(
     name => {
-      history.push(`/userInfo/${name}`);
+      router.replace(`/userInfo/${name}`);
       resetHandler();
     },
-    [history, resetHandler]
+    [router, resetHandler]
   );
 
   const expeditionDialog = useMemo(
