@@ -21,10 +21,10 @@ import {
 import Layout from "layout/index";
 import { interval } from "utils/events/interval";
 import * as Styled from "../styles/home.style";
-import { getCalendarData, getEventData } from "api/api";
+// import { getCalendarData, getEventData } from "api/api";
 import { useRouter } from "next/router";
 
-const Home = ({ eventData, calendarData }) => {
+const Home = ({ eventData = null, calendarData = null }) => {
   const [isMidnight, setMidnight] = useState(new Date());
   const [isSix, setSix] = useState(new Date());
   const history = useRouter();
@@ -139,15 +139,15 @@ const Home = ({ eventData, calendarData }) => {
   );
 };
 
-export async function getServerSideProps() {
-  try {
-    const eventData = JSON.stringify(await getEventData());
-    const calendarData = JSON.stringify(await getCalendarData());
-    return { props: { eventData, calendarData } };
-  } catch {
-    return { props: { eventData: null, calendarData: null } };
-  }
-}
+// export async function getServerSideProps() {
+//   try {
+//     const eventData = JSON.stringify(await getEventData());
+//     const calendarData = JSON.stringify(await getCalendarData());
+//     return { props: { eventData, calendarData } };
+//   } catch {
+//     return { props: { eventData: null, calendarData: null } };
+//   }
+// }
 
 // pre-rendering을 위해, homeData를 받아올 때 서버에서는 DOMParser를 인식하지 못함
 //  왜냐, 정적생성을 할 때에는 DOM을 구성하기 전에 서버에서 실행되기 때문
