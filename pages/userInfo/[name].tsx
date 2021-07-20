@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 const UserInfo = () => {
   const history = useRouter();
   const { name } = history.query;
+  const router = useRouter();
 
   return (
     <Layout title={`유저정보 - ${name}`} page="userInfo">
@@ -19,7 +20,7 @@ const UserInfo = () => {
         errorFallback={<HeaderLayout children={<ErrorFallback />} />}
       >
         <HeaderLayout>
-          <FetchUserInfo name={name} history={history} />
+          <FetchUserInfo name={name} router={router} />
         </HeaderLayout>
       </AsyncBoundary>
     </Layout>
