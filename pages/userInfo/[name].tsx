@@ -9,9 +9,10 @@ import Layout, { HeaderLayout } from "layout/index";
 import { useRouter } from "next/router";
 
 const UserInfo = () => {
-  const history = useRouter();
-  const { name } = history.query;
   const router = useRouter();
+  const { name } = router.query;
+
+  if (!router.isReady) return null;
 
   return (
     <Layout title={`유저정보 - ${name}`} page="userInfo">
