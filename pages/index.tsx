@@ -139,7 +139,7 @@ const Home = ({ eventData, calendarData }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   try {
     const eventData = JSON.stringify(await getEventData());
     const calendarData = JSON.stringify(await getCalendarData());
