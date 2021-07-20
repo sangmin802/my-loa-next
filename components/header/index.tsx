@@ -9,7 +9,7 @@ interface IHeader {
 
 const Header = ({ resetBoundary }: PropsWithChildren<IHeader>) => {
   const textInput = useRef(null);
-  const history = useRouter();
+  const router = useRouter();
   const onSubmitHandler = useCallback(
     e => {
       const name = textInput?.current?.value;
@@ -22,18 +22,18 @@ const Header = ({ resetBoundary }: PropsWithChildren<IHeader>) => {
 
       if (isEmpty) return;
 
-      history.replace(`/userInfo/${name}`);
+      router.replace(`/userInfo/${name}`);
     },
-    [textInput, history, resetBoundary]
+    [textInput, router, resetBoundary]
   );
 
   const onHomeHandler = useCallback(
     e => {
       e.preventDefault();
       resetBoundary?.();
-      history.replace(`/`);
+      router.replace(`/`);
     },
-    [resetBoundary, history]
+    [resetBoundary, router]
   );
 
   return (
