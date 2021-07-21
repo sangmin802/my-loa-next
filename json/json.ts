@@ -274,6 +274,7 @@ const partTime1 = [
   "23:00",
 ];
 const partTime2 = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00"];
+const partTime3 = [...partTime2, ...partTime1];
 const partTime1End = "05:00";
 const partTime2End = "05:00";
 
@@ -1124,14 +1125,13 @@ export const FIELD_BOSS = [
   ],
 ];
 
-// 질병 광기 몽환 어둠
+// 카오스게이트
 export const CHAOS_GATE = [
-  [],
   [
     {
       name: "일렁이는 질병군단",
       src: "/img/chaos/chaos_01.png",
-      time: partTime1,
+      time: partTime3,
       additionalTime: partTime2,
       endTime: partTime1End,
       lv: 802,
@@ -1141,7 +1141,7 @@ export const CHAOS_GATE = [
     {
       name: "일렁이는 어둠군단",
       src: "/img/chaos/chaos_04.png",
-      time: partTime1,
+      time: partTime3,
       additionalTime: partTime2,
       endTime: partTime1End,
       lv: 960,
@@ -1151,7 +1151,7 @@ export const CHAOS_GATE = [
     {
       name: "일렁이는 광기군단",
       src: "/img/chaos/chaos_02.png",
-      time: partTime1,
+      time: partTime3,
       additionalTime: partTime2,
       endTime: partTime1End,
       lv: 1302,
@@ -1161,7 +1161,49 @@ export const CHAOS_GATE = [
     {
       name: "일렁이는 ??군단",
       src: "/img/chaos/chaos_05.png",
-      time: partTime1,
+      time: partTime3,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 1415,
+      position: "베른 남부-칸다리아 영지",
+      contType: "CHAOS_GATE",
+    },
+  ],
+  [
+    {
+      name: "일렁이는 질병군단",
+      src: "/img/chaos/chaos_01.png",
+      time: partTime3,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 802,
+      position: "욘-미완의 정원",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 어둠군단",
+      src: "/img/chaos/chaos_04.png",
+      time: partTime3,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 960,
+      position: "페이튼-울부짖는 늪지대",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 광기군단",
+      src: "/img/chaos/chaos_02.png",
+      time: partTime3,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 1302,
+      position: "파푸니카-별모래 해변",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 ??군단",
+      src: "/img/chaos/chaos_05.png",
+      time: partTime3,
       additionalTime: partTime2,
       endTime: partTime1End,
       lv: 1415,
@@ -1288,7 +1330,48 @@ export const CHAOS_GATE = [
       contType: "CHAOS_GATE",
     },
   ],
-  [],
+  [
+    {
+      name: "일렁이는 질병군단",
+      src: "/img/chaos/chaos_01.png",
+      time: partTime1,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 802,
+      position: "욘-미완의 정원",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 어둠군단",
+      src: "/img/chaos/chaos_04.png",
+      time: partTime1,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 960,
+      position: "페이튼-울부짖는 늪지대",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 광기군단",
+      src: "/img/chaos/chaos_02.png",
+      time: partTime1,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 1302,
+      position: "파푸니카-별모래 해변",
+      contType: "CHAOS_GATE",
+    },
+    {
+      name: "일렁이는 ??군단",
+      src: "/img/chaos/chaos_05.png",
+      time: partTime1,
+      additionalTime: partTime2,
+      endTime: partTime1End,
+      lv: 1415,
+      position: "베른 남부-칸다리아 영지",
+      contType: "CHAOS_GATE",
+    },
+  ],
 ];
 
 // 항해
@@ -1614,6 +1697,7 @@ export const OCEAN_ACT = [
   ],
 ];
 
+// 유령선
 export const PHANTOM_SHIP = [
   [
     {
