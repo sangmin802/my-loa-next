@@ -9,11 +9,10 @@ interface IWrap {
 }
 
 interface IServer<T> {
-  setUserData: (T: string) => void;
   wrap: T;
 }
 
-const Server = ({ wrap, setUserData }: PropsWithChildren<IServer<IWrap>>) => {
+const Server = ({ wrap }: PropsWithChildren<IServer<IWrap>>) => {
   return (
     <>
       <Styled.Title>
@@ -23,7 +22,7 @@ const Server = ({ wrap, setUserData }: PropsWithChildren<IServer<IWrap>>) => {
         {wrap.charList.map((char, charIndex) => {
           return (
             <Styled.Content key={`userExpeditionChar${charIndex}`}>
-              <ServerChar setUserData={setUserData} char={char} />
+              <ServerChar char={char} />
             </Styled.Content>
           );
         })}
