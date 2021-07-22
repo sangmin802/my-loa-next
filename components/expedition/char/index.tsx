@@ -11,10 +11,11 @@ interface IChar<T> {
   char: T;
 }
 
+const Char = ({ char }: PropsWithChildren<IChar<IData>>) => {
   return (
     <Styled.Container>
-      <Button onClick={setUserDataEvent} aria-label="expedition-char">
-        <Text type="desc">
+      <Button aria-label="expedition-char">
+        <Text type="desc" data-name={char.name}>
           {char.lv} {char.name}
         </Text>
       </Button>
