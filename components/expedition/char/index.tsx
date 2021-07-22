@@ -8,14 +8,8 @@ interface IData {
 }
 
 interface IChar<T> {
-  setUserData: (T: string) => void;
   char: T;
 }
-
-const Char = ({ setUserData, char }: PropsWithChildren<IChar<IData>>) => {
-  const setUserDataEvent = useCallback(() => {
-    setUserData(char.name);
-  }, [char.name, setUserData]);
 
   return (
     <Styled.Container>
