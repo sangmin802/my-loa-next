@@ -23,26 +23,26 @@ const UserExpedition = ({
     expeditionInfo: { expeditionUserWrap },
   } = userData;
 
-  const closeHandler = useCallback(() => {
-    setDialog(null);
-  }, [setDialog]);
+  const expeditionHandler = useCallback(
+    e => {
+      const type = e.target.dataset;
+
+      if (type.close) return setDialog(null);
+      if (type.name) return setUserData(type.name);
+    },
+    [setDialog, setUserData]
+  );
 
   return (
     <>
-      <Styled.ButtonContainer>
-        <Button onClick={closeHandler}>
-          <Text>닫기</Text>
+      <Styled.ButtonContainer onClick={expeditionHandler}>
+        <Button>
+          <Text data-close>닫기</Text>
         </Button>
       </Styled.ButtonContainer>
-      {expeditionUserWrap.map((wrap, index) => {
-        return (
-          <ExpeditionServer
-            key={`userExpedition${index}`}
-            wrap={wrap}
-            setUserData={setUserData}
-          />
-        );
-      })}
+      {expeditionUserWrap.map((wrap, index) => (
+        <ExpeditionServer key={`userExpedition${index}`} wrap={wrap} />
+      ))}
     </>
   );
 };
