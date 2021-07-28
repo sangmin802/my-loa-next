@@ -57,10 +57,10 @@ export default class AbilityInfo implements Props {
     const equipKeyArr = Object.keys(equip);
     equipKeyArr.forEach((key: string) => {
       const num = Number(key.substr(key.length - 3, key.length));
-      const type = num < 12 ? "equipment" : "avatar";
+      const type = num < 12 || num > 22 ? "equipment" : "avatar";
       if (partsArr[num]) {
         const target = this.equipInfo[type][partsArr[num]];
-        target.detail = new EquipInfo(equip[key]);
+        target.detail = new EquipInfo(equip[key], num);
       }
     });
   }
