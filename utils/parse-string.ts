@@ -1,5 +1,3 @@
-import { JSDOM } from "jsdom";
-
 export function getOnlyText(string) {
   if (!string) return;
   const newStr = string.replace(/<BR>$/gi, "").replace(/<BR>/gi, "enter");
@@ -21,10 +19,6 @@ export function returnBody(data) {
 }
 
 export function parseFromString(string) {
-  if (JSDOM) {
-    return new JSDOM(string).window.document;
-  } else {
-    const parser = new DOMParser();
-    return parser.parseFromString(string, "text/html");
-  }
+  const parser = new DOMParser();
+  return parser.parseFromString(string, "text/html");
 }
