@@ -38,7 +38,7 @@ export default class EquipInfo implements Props {
   indentStringGroup: IndentStringGroup[] = [];
   tripodSkillCustom: TripodSkillCustom[] = [];
 
-  constructor(data) {
+  constructor(data, num) {
     const v = Object.values(data);
     const NameTagBox = this.findType(v, "NameTagBox"); // 아이템 이름
     const ItemTitle = this.findType(v, "ItemTitle"); // 아이템 세부 설명
