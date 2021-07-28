@@ -22,6 +22,10 @@ export const PARTS_ARR = [
   "020_av_in_head",
   "021_av_in_cloth",
   "022_av_in_pants",
+  null,
+  null,
+  null,
+  "026_wristband",
 ];
 
 export const PARTS_IMAGE = [
@@ -48,6 +52,10 @@ export const PARTS_IMAGE = [
   "/2018/obt/assets/images/common/game/bg_avatar_slot3.png?27b016892d9a32cc5b8af5db3b179aa8",
   "/2018/obt/assets/images/common/game/bg_avatar_slot6.png?edbe15fe183c44e05013953d0cdf4b7b",
   "/2018/obt/assets/images/common/game/bg_avatar_slot6.png?edbe15fe183c44e05013953d0cdf4b7b",
+  null,
+  null,
+  null,
+  "/2018/obt/assets/images/common/game/bg_equipment_slot19.png?fbb7afdbba6c583bf59e835104e5f80b",
 ];
 
 export const DAILY_ISLAND = [
