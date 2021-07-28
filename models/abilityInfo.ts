@@ -29,9 +29,11 @@ export default class AbilityInfo implements Props {
 
   constructor(profileObj, raw) {
     PARTS_ARR.forEach((part, index) => {
-      const type = index < 12 ? "equipment" : "avatar";
+      if (!part) return;
+      const type = index < 12 || index > 22 ? "equipment" : "avatar";
       let divideType = null;
 
+      if (index === 26) divideType = "wristband";
       if (index <= 22) divideType = "outerAv";
       if (index <= 18) divideType = "innerAv";
       if (index === 11) divideType = "stone";
