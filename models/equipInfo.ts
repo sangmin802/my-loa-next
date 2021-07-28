@@ -74,7 +74,7 @@ export default class EquipInfo implements Props {
       const els: string[] = Object.values(res.value);
       this.itemPartBox.push({
         title: els[0],
-        desc: els[1],
+        desc: num === 26 ? this.wristbandSrcReaplce(els[1]) : els[1],
       });
     });
 
@@ -123,5 +123,16 @@ export default class EquipInfo implements Props {
   }
   findType(arr, type) {
     return arr.find(res => res.type === type);
+  }
+  wristbandSrcReaplce(str) {
+    return str
+      .replace(
+        /emoticon_tooltip_bracelet_locked/gi,
+        "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/game/ico_tooltip_locked.png"
+      )
+      .replace(
+        /emoticon_tooltip_bracelet_changeable/gi,
+        "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/game/ico_tooltip_changeable.png"
+      );
   }
 }
