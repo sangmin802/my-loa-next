@@ -31,7 +31,7 @@ export const getUserData = async (name): Promise<UserInfo> => {
 export const getEventData = async (): Promise<EventData> => {
   try {
     const { data } = await axios({
-      url: `${PROXY}loa-hands/homeData`,
+      url: `${PROXY}loa-hands/event`,
       method: "get",
     });
     return new EventData(data);
@@ -44,7 +44,7 @@ export const getEventData = async (): Promise<EventData> => {
 export const getCalendarData = async (): Promise<CalenderData> => {
   try {
     const { data } = await axios({
-      url: `${PROXY}loa-hands/timer`,
+      url: `${PROXY}loa-hands/calendar`,
       method: "get",
     });
     return new CalenderData(data);
