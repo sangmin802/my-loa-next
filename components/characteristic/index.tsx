@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import Lodash from "lodash";
-import { DangerousHTML, Text } from "../";
+import { DangerousHTML, Text, MapContainer } from "../";
 import * as Styled from "./index.style";
 
 interface IContent {
@@ -14,46 +14,38 @@ interface IData {
 }
 
 interface ICharacteristic<T> {
-  data: T[];
+  data?: T;
 }
 
 const Chararteristic = <T extends IData>({
   data,
 }: PropsWithChildren<ICharacteristic<T>>) => {
   return (
-    <>
-      {data.map(({ title, content }) => {
-        return (
-          <Styled.Container key={title}>
-            <Styled.Title>
-              <Text type="title">{title}</Text>
-            </Styled.Title>
-            <Item content={content} />
-          </Styled.Container>
-        );
-      })}
-    </>
+    <Styled.Container key={data.title}>
+      <Styled.Title>
+        <Text type="title">{data.title}</Text>
+      </Styled.Title>
+      <MapContainer data={data.content}>
+        <Item />
+      </MapContainer>
+    </Styled.Container>
   );
 };
 
 interface IItem<T> {
-  content: T[];
+  data?: T;
 }
 
-const Item = <T extends IContent>({ content }: PropsWithChildren<IItem<T>>) => {
+const Item = <T extends IContent>({ data }: PropsWithChildren<IItem<T>>) => {
   return (
-    <>
-      {content.map(({ title, desc }) => (
-        <Styled.Item key={title[0]}>
-          <Styled.Title type="itemTitle">
-            <Text>
-              {title[0]} {title[1]}
-            </Text>
-          </Styled.Title>
-          <DangerousHTML html={desc} />
-        </Styled.Item>
-      ))}
-    </>
+    <Styled.Item key={data.title[0]}>
+      <Styled.Title type="itemTitle">
+        <Text>
+          {data.title[0]} {data.title[1]}
+        </Text>
+      </Styled.Title>
+      <DangerousHTML html={data.desc} />
+    </Styled.Item>
   );
 };
 

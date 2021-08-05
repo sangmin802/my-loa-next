@@ -1,51 +1,36 @@
 interface CollectionMini {
-  name: string;
-  size: string;
-}
-interface CollectionDetail {
   title: string;
   getCount: string;
   totalCount: string;
-  collection: {
-    type: string;
-    divideType: string;
-    detail: { subTitle: string[]; title: string; grade: string };
-  }[];
+}
+interface CollectionDetail {
+  type: string;
+  divideType: string;
+  detail: { subTitle: string[]; title: string; grade: string };
 }
 interface Props {
   collectionMini: CollectionMini[];
-  collectionDetail: CollectionDetail[];
+  collectionDetail: CollectionDetail[][];
 }
 
 export default class CollectionInfo implements Props {
   collectionMini: CollectionMini[] = [];
-  collectionDetail: CollectionDetail[] = [];
+  collectionDetail: CollectionDetail[][] = [];
 
   constructor(co) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(co, "text/html");
 
-    this.collectionMini = [
-      ...doc.getElementsByClassName("lui-tab__menu")[0].children,
-    ].map(el => {
-      const child = el.childNodes;
-      return {
-        name: child[0].textContent.trim(),
-        size: child[1].textContent,
-      };
-    });
-    this.collectionDetail = [
-      ...doc.getElementsByClassName("collection-list"),
-    ].map((colPart, index) => {
-      const child = colPart.children;
-      const title = child[0].children[0].textContent;
-      const getCount = child[0].children[1].children[0].textContent;
-      const totalCount = child[0].children[1].children[1].textContent;
-      return {
-        title,
-        getCount,
-        totalCount,
-        collection: [...child[1].children].map(li => {
+    [...doc.getElementsByClassName("collection-list")].forEach(
+      (colPart, index) => {
+        const child = colPart.children;
+        const title = child[0].children[0].textContent;
+        const getCount = child[0].children[1].children[0].textContent;
+        const totalCount = child[0].children[1].children[1].textContent;
+
+        this.collectionMini.push({ title, getCount, totalCount });
+
+        const detail = [...child[1].children].map(li => {
           const type = "collection";
           let childNodes = li.childNodes;
           let subTitle = childNodes[0].textContent;
@@ -66,8 +51,10 @@ export default class CollectionInfo implements Props {
             divideType,
             detail: { subTitle: [`#${subTitle}`], title, grade: divideType },
           };
-        }),
-      };
-    });
+        });
+
+        this.collectionDetail.push(detail);
+      }
+    );
   }
 }

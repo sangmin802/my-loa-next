@@ -7,10 +7,8 @@ const contentType = {
   `,
 };
 
-export const Container = styled.section`
+export const Home = styled.section`
   padding: 0.5rem;
-
-  background: ${({ theme }) => theme.backgroundColor.darkLow};
 `;
 
 export const Section = styled.section`
@@ -19,14 +17,14 @@ export const Section = styled.section`
 
 export const Content = styled.section<{ type?: string }>`
   ${({ type }) => contentType[type]}
-`;
 
-export const Event = styled.article`
-  width: calc((100% - 0.5rem) / 2 - 0.1px);
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
+  & > article {
+    width: calc((100% - 0.5rem) / 2 - 0.1px);
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
 
-  &:nth-child(2n) {
-    margin-right: 0;
+    &:nth-child(2n) {
+      margin-right: 0;
+    }
   }
 `;

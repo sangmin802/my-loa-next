@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactElement, useCallback } from "react";
 import Lodash from "lodash";
-import ExpeditionServer from "./server/index";
-import { Button, Text } from "components/";
+import Server from "./server/index";
+import { Button, Text, MapContainer } from "components/";
 import * as Styled from "./index.style";
 
 interface IUserData {
@@ -23,7 +23,7 @@ const UserExpedition = ({
     expeditionInfo: { expeditionUserWrap },
   } = userData;
 
-  const expeditionHandler = useCallback(
+  const handleExpedition = useCallback(
     e => {
       const type = e.target.dataset;
 
@@ -34,16 +34,16 @@ const UserExpedition = ({
   );
 
   return (
-    <>
-      <Styled.ButtonContainer onClick={expeditionHandler}>
+    <Styled.Container onClick={handleExpedition}>
+      <Styled.ButtonContainer>
         <Button>
           <Text data-close>닫기</Text>
         </Button>
       </Styled.ButtonContainer>
-      {expeditionUserWrap.map((wrap, index) => (
-        <ExpeditionServer key={`userExpedition${index}`} wrap={wrap} />
-      ))}
-    </>
+      <MapContainer data={expeditionUserWrap}>
+        <Server />
+      </MapContainer>
+    </Styled.Container>
   );
 };
 

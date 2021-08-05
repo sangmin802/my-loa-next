@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.article`
+  width: 50%;
   padding: 0.5rem;
   border-radius: 3px;
   cursor: pointer;

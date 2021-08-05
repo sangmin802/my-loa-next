@@ -11,31 +11,26 @@ interface IData {
 }
 
 interface ITripodSkillCustom<T> {
-  data: T[];
+  data?: T;
 }
 
 const TripodSkillCustom = ({
   data,
 }: PropsWithChildren<ITripodSkillCustom<IData>>) => {
+  const { name = null, desc = null, grade = null, src = null } = data;
+
   return (
-    <>
-      {data.map((ts, index) => {
-        const { name = null, desc = null, grade = null, src = null } = ts;
-        return (
-          <Styled.Content key={`ts${index}`} src={src}>
-            <Image src={src} color={`gradient${grade}`} />
-            <>
-              <Styled.TextContainer type="title" src={src}>
-                <DangerousHTML html={name} />
-              </Styled.TextContainer>
-              <Styled.TextContainer type="desc" src={src}>
-                <DangerousHTML html={desc} />
-              </Styled.TextContainer>
-            </>
-          </Styled.Content>
-        );
-      })}
-    </>
+    <Styled.Content src={src}>
+      <Image src={src} color={`gradient${grade}`} />
+      <>
+        <Styled.TextContainer type="title" src={src}>
+          <DangerousHTML html={name} />
+        </Styled.TextContainer>
+        <Styled.TextContainer type="desc" src={src}>
+          <DangerousHTML html={desc} />
+        </Styled.TextContainer>
+      </>
+    </Styled.Content>
   );
 };
 

@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const ErrorFallback = styled.section`
+  background: ${({ theme }) => theme.backgroundColor.darkDeep};
+`;
+
 export const ImageContainer = styled.div`
   width: 40%;
   max-width: 300px;

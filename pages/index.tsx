@@ -9,25 +9,32 @@ import {
   OCEAN_ACT,
   PHANTOM_SHIP,
 } from "json/json";
+import { useCalendar } from "hooks/use-calendar";
+import { useEvent } from "hooks/use-event";
 import {
-  FetchEvent,
-  FetchCalendar,
   SectionContainer,
   TimerContainer,
   LoadingSpinner,
+  Event,
   AsyncBoundary,
   ErrorFallback,
+  MapContainer,
 } from "components/";
 import Layout from "layout/index";
 import { interval } from "utils/events/interval";
 import * as Styled from "../styles/home.style";
 // import { getCalendarData, getEventData } from "api/api";
 import { useRouter } from "next/router";
+import { useCancelQuery } from "hooks/use-cancel-query";
 
 const Home = ({ eventData = null, calendarData = null }) => {
+  const history = useRouter();
   const [isMidnight, setMidnight] = useState(new Date());
   const [isSix, setSix] = useState(new Date());
-  const history = useRouter();
+  const queryKey = useMemo(
+    () => ["fetchEventData", ["fetchCalendarData", isMidnight.getDate()]],
+    [isMidnight]
+  );
 
   const updateTime = useCallback(arr => {
     const [setMidnight, setSix] = arr;
@@ -35,12 +42,8 @@ const Home = ({ eventData = null, calendarData = null }) => {
     const hour = now.getHours();
     const min = now.getMinutes();
     const sec = now.getSeconds();
-    if (hour === 0 && min === 0 && sec === 0) {
-      setMidnight(now);
-    }
-    if (hour === 6 && min === 0 && sec === 0) {
-      setSix(now);
-    }
+    if (hour === 0 && min === 0 && sec === 0) setMidnight(now);
+    if (hour === 6 && min === 0 && sec === 0) setSix(now);
   }, []);
 
   const { startInterval, endInterval } = useMemo(
@@ -71,16 +74,18 @@ const Home = ({ eventData = null, calendarData = null }) => {
     })(window.location);
   }, [history]);
 
+  useCancelQuery(queryKey);
+
   return (
     <Layout page="/">
-      <Styled.Container>
+      <Styled.Home>
         <Styled.Section>
           <SectionContainer title="진행중인 이벤트">
             <AsyncBoundary
               suspenseFallback={<LoadingSpinner />}
               errorFallback={<ErrorFallback />}
             >
-              <FetchEvent initialData={eventData} />
+              <FetchEvent queryKey={queryKey[0]} />
             </AsyncBoundary>
           </SectionContainer>
         </Styled.Section>
@@ -90,10 +95,7 @@ const Home = ({ eventData = null, calendarData = null }) => {
               suspenseFallback={<LoadingSpinner />}
               errorFallback={<ErrorFallback />}
             >
-              <FetchCalendar
-                isMidnight={isMidnight}
-                initialData={calendarData}
-              />
+              <FetchCalendar queryKey={queryKey[1]} isMidnight={isMidnight} />
             </AsyncBoundary>
           </SectionContainer>
         </Styled.Section>
@@ -134,8 +136,43 @@ const Home = ({ eventData = null, calendarData = null }) => {
             />
           </SectionContainer>
         </Styled.Section>
-      </Styled.Container>
+      </Styled.Home>
     </Layout>
+  );
+};
+
+const FetchCalendar = ({ queryKey, isMidnight }) => {
+  const yoil = isMidnight.getDay();
+  const calendarData = useCalendar(queryKey);
+  const isWeek = 6 > yoil && yoil > 0;
+  const title = useMemo(() => {
+    if (isWeek) return "11:00 ~ 21:00";
+    return "09:00 ~ 23:00";
+  }, [isWeek]);
+
+  return (
+    <Styled.Section>
+      <SectionContainer title={title}>
+        <TimerContainer
+          data={
+            isWeek ? calendarData.calendar[0] : calendarData.calendar[1] ?? []
+          }
+          rerenderKey={isMidnight}
+        />
+      </SectionContainer>
+    </Styled.Section>
+  );
+};
+
+const FetchEvent = ({ queryKey }) => {
+  const eventData = useEvent(queryKey);
+
+  return (
+    <Styled.Content type="event">
+      <MapContainer data={eventData.events} dataKey="event">
+        <Event />
+      </MapContainer>
+    </Styled.Content>
   );
 };
 

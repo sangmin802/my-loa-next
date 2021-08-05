@@ -4,8 +4,9 @@ import React, {
   ReactElement,
   useCallback,
 } from "react";
-import { Image, Text } from "components/";
+import { Image, Text, ConditionalContainer, MapContainer } from "components/";
 import * as Styled from "./index.style";
+import Lodash from "lodash";
 
 interface IDetail {
   src?: string;
@@ -48,22 +49,21 @@ const ListItem = ({
       type={data.type}
     >
       <Image src={detail?.src ?? backSrc} color={`gradient${detail?.grade}`} />
-      {detail && (
+      <ConditionalContainer isRender={detail !== null}>
         <Styled.Desc type={data.type}>
-          {detail.subTitle.map(text => (
+          <MapContainer data={detail?.subTitle} dataKey="children">
             <Text
-              key={text}
-              color={detail.grade ? `color${detail.grade}` : "white"}
-              type={"subTitle"}
-            >
-              {text}
-            </Text>
-          ))}
-          <Text>{detail.title}</Text>
+              color={detail?.grade ? `color${detail?.grade}` : "white"}
+              type="small"
+            />
+          </MapContainer>
+          <Text type="subTitle">{detail?.title}</Text>
         </Styled.Desc>
-      )}
+      </ConditionalContainer>
     </Styled.Container>
   );
 };
 
-export default ListItem;
+export default React.memo(ListItem, (left, right) =>
+  Lodash.isEqual(left, right)
+);

@@ -10,18 +10,18 @@ interface IData {
 }
 
 interface IEvent<T> {
-  event: T;
+  event?: T;
 }
 
 const Event = ({ event }: PropsWithChildren<IEvent<IData>>) => {
   const { date, href, img, name } = event;
 
-  const goHref = useCallback(() => {
+  const handleOpenEvent = useCallback(() => {
     window.open(`https://lostark.game.onstove.com/${href}`);
   }, [href]);
 
   return (
-    <Styled.Container title="event" onClick={goHref}>
+    <Styled.Container title="event" onClick={handleOpenEvent}>
       <Image src={img} />
       <Styled.Desc>
         <Text>{name}</Text>

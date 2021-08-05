@@ -1,12 +1,21 @@
-import UserInfo from "models/userInfo";
-// import HomeData from "models/homeData";
-import { returnBody } from "utils/parse-string";
 import { PROXY } from "proxy";
 import axios from "axios";
+import UserInfo from "models/userInfo";
+import UserCollectionInfo from "models/collectionInfo";
 import EventData from "models/eventData";
 import CalenderData from "models/calendarData";
 
+const CancelToken = axios.CancelToken;
+
+let cancelFetchEvent;
+let cancelFetchCalendar;
+let cancelFetchUserCollection;
+
 export const getUserData = async (name): Promise<UserInfo> => {
+  cancelFetchEvent?.();
+  cancelFetchCalendar?.();
+  cancelFetchUserCollection?.();
+
   try {
     const { data } = await axios({
       url: `${PROXY}loa-hands/userInfo`,
@@ -14,16 +23,28 @@ export const getUserData = async (name): Promise<UserInfo> => {
       data: { name },
     });
 
-    const { info, col } = data;
-    const body: Element = returnBody(info);
-    const expedition: Element = body.getElementsByClassName(
-      "myinfo__character--wrapper2"
-    )[0];
-    const user: UserInfo = new UserInfo(body, expedition, col);
+    const user: UserInfo = new UserInfo(data);
     return user;
   } catch (err) {
-    let message = err?.response?.data?.message ?? "네트워크 에러입니다.";
-    if (typeof err == "string") message = err;
+    const message = err?.response?.data?.message ?? "네트워크 에러입니다.";
+    throw new Error(message);
+  }
+};
+
+export const getUserCollection = async (
+  member
+): Promise<UserCollectionInfo> => {
+  try {
+    const { data } = await axios({
+      url: `${PROXY}loa-hands/userCollection`,
+      method: "post",
+      data: { member },
+      cancelToken: new CancelToken(c => (cancelFetchUserCollection = c)),
+    });
+    const userCollectionInfo: UserCollectionInfo = new UserCollectionInfo(data);
+    return userCollectionInfo;
+  } catch (err) {
+    const message = err?.response?.data?.message ?? "네트워크 에러입니다.";
     throw new Error(message);
   }
 };
@@ -33,6 +54,7 @@ export const getEventData = async (): Promise<EventData> => {
     const { data } = await axios({
       url: `${PROXY}loa-hands/event`,
       method: "get",
+      cancelToken: new CancelToken(c => (cancelFetchEvent = c)),
     });
     return new EventData(data);
   } catch (err) {
@@ -46,7 +68,9 @@ export const getCalendarData = async (): Promise<CalenderData> => {
     const { data } = await axios({
       url: `${PROXY}loa-hands/calendar`,
       method: "get",
+      cancelToken: new CancelToken(c => (cancelFetchCalendar = c)),
     });
+
     return new CalenderData(data);
   } catch (err) {
     if (err?.request) throw new Error("네트워크 에러입니다.");
@@ -77,12 +101,7 @@ export default {
         data: { name },
       });
 
-      const { info, col } = data;
-      const body: Element = returnBody(info);
-      const expedition: Element = body.getElementsByClassName(
-        "myinfo__character--wrapper2"
-      )[0];
-      const user: UserInfo = new UserInfo(body, expedition, col);
+      const user: UserInfo = new UserInfo(data);
       return user;
     } catch (err) {
       const message = err?.response?.data?.message ?? "네트워크 에러입니다.";

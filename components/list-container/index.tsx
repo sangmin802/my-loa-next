@@ -1,6 +1,7 @@
 import React, { cloneElement, PropsWithChildren, ReactElement } from "react";
-import { Text } from "components/";
+import { Text, MapContainer } from "components/";
 import * as Styled from "./index.style";
+import Lodash from "lodash";
 
 interface IListContainer {
   title: string;
@@ -18,15 +19,13 @@ const ListContainer = ({
       <Styled.Title>
         <Text>{title}</Text>
       </Styled.Title>
-      <>
-        {arr.map((res, index) => (
-          <Styled.Content key={`item${index}`}>
-            {cloneElement(children, { data: res })}
-          </Styled.Content>
-        ))}
-      </>
+      <Styled.Content>
+        <MapContainer data={arr}>{cloneElement(children)}</MapContainer>
+      </Styled.Content>
     </>
   );
 };
 
-export default ListContainer;
+export default React.memo(ListContainer, (left, right) =>
+  Lodash.isEqual(left, right)
+);

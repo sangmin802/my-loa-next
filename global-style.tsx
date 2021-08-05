@@ -49,9 +49,6 @@ export const THEME = {
   isShow: css<{ isShow: boolean }>`
     display: ${({ isShow }) => (isShow ? "block" : "none")};
   `,
-  isFlex: css<{ isFlex: boolean }>`
-    display: ${({ isFlex }) => (isFlex ? "flex" : "none")};
-  `,
   isLoading: css`
     height: 100vh;
     overflow: hidden;

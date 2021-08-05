@@ -1,37 +1,25 @@
 import React, { PropsWithChildren } from "react";
 import Lodash from "lodash";
-import { DangerousHTML } from "../";
+import { DangerousHTML, MapContainer } from "../";
 import * as Styled from "./index.style";
 
-interface IHTML {
-  val: string;
-}
-
-interface IData<T> {
-  title: T;
-  desc: T[];
+interface IData {
+  title: string;
+  desc: string[];
 }
 
 interface IIndengString<T> {
-  data?: T[];
+  data?: T;
 }
 
-const IntentString = ({
-  data,
-}: PropsWithChildren<IIndengString<IData<IHTML>>>) => {
+const IntentString = ({ data }: PropsWithChildren<IIndengString<IData>>) => {
   return (
-    <>
-      {data.map(({ title: { val }, desc }, index) => {
-        return (
-          <Styled.Content key={index}>
-            <DangerousHTML html={val} />
-            {desc.map(({ val }, index) => (
-              <DangerousHTML key={index} html={val} />
-            ))}
-          </Styled.Content>
-        );
-      })}
-    </>
+    <Styled.Content>
+      <DangerousHTML html={data.title} />
+      <MapContainer data={data.desc} dataKey="html">
+        <DangerousHTML />
+      </MapContainer>
+    </Styled.Content>
   );
 };
 

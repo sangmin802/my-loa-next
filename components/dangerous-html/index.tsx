@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import * as Styled from "./index.style";
 
 interface IDangerousHTML {
-  html: string;
+  html?: string;
 }
 
 const DangerousHTML = ({ html }: PropsWithChildren<IDangerousHTML>) => {

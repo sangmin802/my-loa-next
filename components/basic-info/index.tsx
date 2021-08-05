@@ -1,14 +1,11 @@
 import React, { PropsWithChildren } from "react";
 import Lodash from "lodash";
-import { Image, Text, Collection } from "../";
+import { Image, Text } from "../";
 import * as Styled from "./index.styles";
 
 interface IUserData {
   basicInfo: { [key: string]: string };
   expeditionInfo: { [key: string]: string };
-  collectionInfo: {
-    collectionMini;
-  };
 }
 
 interface IBasicInfo<T> {
@@ -18,7 +15,7 @@ interface IBasicInfo<T> {
 const BasicInfo = <T extends IUserData>({
   userData,
 }: PropsWithChildren<IBasicInfo<T>>) => {
-  const { basicInfo, expeditionInfo, collectionInfo } = userData;
+  const { basicInfo, expeditionInfo } = userData;
   const {
     className,
     classSrc,
@@ -33,7 +30,6 @@ const BasicInfo = <T extends IUserData>({
     title,
   } = basicInfo;
   const { name, server, Lv } = expeditionInfo;
-  const { collectionMini: collection } = collectionInfo;
 
   return (
     <>
@@ -126,7 +122,6 @@ const BasicInfo = <T extends IUserData>({
           </Styled.Content>
         </Styled.InnerContainer>
       </Styled.Container>
-      <Styled.Collection>{Collection({ collection })}</Styled.Collection>
     </>
   );
 };

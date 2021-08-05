@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import * as Styled from "./index.style";
 import { Text } from "components/";
+import Lodash from "lodash";
 
 interface IData {
   detail: { quality: number };
@@ -34,4 +35,6 @@ const Quality = ({ data }: PropsWithChildren<IQuality<IData>>) => {
   );
 };
 
-export default Quality;
+export default React.memo(Quality, (left, right) =>
+  Lodash.isEqual(left, right)
+);

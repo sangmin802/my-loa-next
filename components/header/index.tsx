@@ -1,50 +1,48 @@
-import React, { useRef, useCallback, PropsWithChildren } from "react";
+import React, { useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import * as Styled from "./index.style";
 import { Input, Button, Text } from "components/";
+import Lodash from "lodash";
+import { useQueryErrorResetBoundary } from "react-query";
 
-interface IHeader {
-  resetBoundary?: () => void;
-}
-
-const Header = ({ resetBoundary }: PropsWithChildren<IHeader>) => {
+const Header = () => {
+  const { reset } = useQueryErrorResetBoundary();
   const textInput = useRef(null);
-  const router = useRouter();
-  const onSubmitHandler = useCallback(
+  const history = useRouter();
+  const handleSubmit = useCallback(
     e => {
       const name = textInput?.current?.value;
       const isEmpty = name.replace(/ /gi, "") === "";
 
       e.preventDefault();
-      resetBoundary?.();
+      reset();
 
       textInput.current.value = null;
 
       if (isEmpty) return;
-
-      router.replace(`/userInfo/${name}`);
+      history.replace(`/userInfo/${name}`);
     },
-    [textInput, router, resetBoundary]
+    [textInput, history, reset]
   );
 
-  const onHomeHandler = useCallback(
+  const handleGoHome = useCallback(
     e => {
       e.preventDefault();
-      resetBoundary?.();
-      router.replace(`/`);
+      reset();
+      history.replace(`/`);
     },
-    [resetBoundary, router]
+    [reset, history]
   );
 
   return (
     <Styled.Container>
-      <Button onClick={onHomeHandler}>
+      <Button onClick={handleGoHome}>
         <Styled.Background data-testid="go-home" />
       </Button>
       <Styled.Form
         data-testid="submit-form"
         className="submit-area"
-        onSubmit={onSubmitHandler}
+        onSubmit={handleSubmit}
       >
         <Styled.InputText>
           <Input
@@ -65,4 +63,4 @@ const Header = ({ resetBoundary }: PropsWithChildren<IHeader>) => {
   );
 };
 
-export default Header;
+export default React.memo(Header, (left, right) => Lodash.isEqual(left, right));

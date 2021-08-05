@@ -1,30 +1,27 @@
 import React, { PropsWithChildren } from "react";
-import * as Styled from "./index.style";
-import { Text } from "components/";
-
-interface IItem {
-  size: string;
-  index?: number;
-}
+import { DoubleListContainer } from "components/";
+import ListItem from "components/list-item";
+import Lodash from "lodash";
 
 interface ICollection {
-  collection: IItem[];
+  data;
+  mini: {
+    title: string;
+    getCount: string;
+    totalCount: string;
+  };
 }
 
-const Collection = ({ collection }: PropsWithChildren<ICollection>) =>
-  collection.map((col, index) => (
-    <Item key={`collectionMini${index}`} index={index} size={col.size} />
-  ));
-
-export const Item = ({ size, index }: PropsWithChildren<IItem>) => {
+const Collection = ({ data, mini }: PropsWithChildren<ICollection>) => {
+  const lt = mini.title;
+  const rt = `획득 : ${mini.getCount} 총 : ${mini.totalCount}`;
   return (
-    <Styled.Item>
-      <Styled.Background position={index} />
-      <Styled.Size>
-        <Text>{size}</Text>
-      </Styled.Size>
-    </Styled.Item>
+    <DoubleListContainer lt={lt} rt={rt} divideType="get" data={data}>
+      <ListItem />
+    </DoubleListContainer>
   );
 };
 
-export default Collection;
+export default React.memo(Collection, (left, right) =>
+  Lodash.isEqual(left, right)
+);

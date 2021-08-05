@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+export const Container = styled.section``;
+
 export const ButtonContainer = styled.div`
   width: 100%;
   margin-bottom: 10px;

@@ -5,7 +5,14 @@ import React, {
   useMemo,
 } from "react";
 import Lodash from "lodash";
-import { ItemPartBox, IndentString, TripodSkillCustom, Image, Text } from "..";
+import {
+  ItemPartBox,
+  IndentString,
+  TripodSkillCustom,
+  Image,
+  Text,
+  MapContainer,
+} from "..";
 import * as Styled from "./index.style";
 
 interface IDetail {
@@ -13,9 +20,9 @@ interface IDetail {
   grade: string;
   title: string;
   subTitle: string[];
-  itemPartBox: [];
-  indentStringGroup: [];
-  tripodSkillCustom: [];
+  itemPartBox?: [];
+  indentStringGroup?: [];
+  tripodSkillCustom?: [];
 }
 
 interface IData<T> {
@@ -23,15 +30,15 @@ interface IData<T> {
   detail: T;
 }
 
-interface IHoverContent<T> {
+interface IDetailContent<T> {
   data: T;
   children: ReactElement;
 }
 
-const HoverContent = ({
+const DetailContent = ({
   data,
   children,
-}: PropsWithChildren<Partial<IHoverContent<IData<IDetail>>>>) => {
+}: PropsWithChildren<Partial<IDetailContent<IData<IDetail>>>>) => {
   const { backSrc, detail } = data;
   const {
     src,
@@ -47,6 +54,11 @@ const HoverContent = ({
     grade,
   ]);
 
+  const optionalDetail = useMemo(() => {
+    if (!children) return null;
+    return cloneElement(children, { data });
+  }, [children, data]);
+
   return (
     <>
       <Styled.Top>
@@ -57,29 +69,29 @@ const HoverContent = ({
             color={`gradient${grade}`}
           />
           <Styled.Desc>
-            {subTitle.map(res => (
-              <Text type="subTitle" key={res}>
-                {res}
-              </Text>
-            ))}
+            <MapContainer data={subTitle} dataKey="children">
+              <Text type="subTitle" />
+            </MapContainer>
             <Text type="title" color={titleColor}>
               {title}
             </Text>
           </Styled.Desc>
         </Styled.Container>
       </Styled.Top>
-      <Styled.Children>
-        {children && cloneElement(children, { data })}
-      </Styled.Children>
-      <>
-        {itemPartBox && <ItemPartBox data={itemPartBox} />}
-        {indentStringGroup && <IndentString data={indentStringGroup} />}
-        {tripodSkillCustom && <TripodSkillCustom data={tripodSkillCustom} />}
-      </>
+      <Styled.Children>{optionalDetail}</Styled.Children>
+      <MapContainer data={itemPartBox}>
+        <ItemPartBox />
+      </MapContainer>
+      <MapContainer data={indentStringGroup}>
+        <IndentString />
+      </MapContainer>
+      <MapContainer data={tripodSkillCustom}>
+        <TripodSkillCustom />
+      </MapContainer>
     </>
   );
 };
 
-export default React.memo(HoverContent, (left, right) =>
+export default React.memo(DetailContent, (left, right) =>
   Lodash.isEqual(left, right)
 );

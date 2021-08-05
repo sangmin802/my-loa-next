@@ -4,6 +4,7 @@ interface Props {
   resetQuery?: () => void;
   errorFallback: ReactElement;
   children: ReactElement;
+  keys: any;
 }
 
 interface States {
@@ -34,11 +35,12 @@ export default class ErrorBoundary extends React.Component<Props, States> {
   };
 
   // 부모 컴포넌트에서의 props 변경 감지를 통한 리렌더링
-  // componentDidUpdate(prev) {
-  //   if (prev.keys !== this.props.keys) {
-  //     this.resetBoundary();
-  //   }
-  // }
+  componentDidUpdate(prev) {
+    if (prev.keys !== this.props.keys) {
+      this.resetBoundary();
+    }
+    return;
+  }
 
   render() {
     if (this.state.hasError) {
@@ -50,7 +52,6 @@ export default class ErrorBoundary extends React.Component<Props, States> {
         resetBoundary: this.resetBoundary,
       });
     }
-
     return this.props.children;
   }
 }

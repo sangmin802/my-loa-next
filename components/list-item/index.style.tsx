@@ -19,7 +19,6 @@ const containerType = {
 };
 
 export const Container = styled.article<{ hover: boolean; type: string }>`
-  min-height: 56px;
   display: flex;
   align-items: center;
   position: relative;

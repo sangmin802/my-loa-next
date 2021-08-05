@@ -9,21 +9,15 @@ interface IData {
 }
 
 interface IItemPartBox<T> {
-  data: T[];
+  data?: T;
 }
 
 const ItemPartBox = ({ data }: PropsWithChildren<IItemPartBox<IData>>) => {
   return (
-    <>
-      {data.map(({ title, desc }, index) => {
-        return (
-          <Styled.Content key={index}>
-            <DangerousHTML html={title} />
-            <DangerousHTML html={desc} />
-          </Styled.Content>
-        );
-      })}
-    </>
+    <Styled.Content>
+      <DangerousHTML html={data.title} />
+      <DangerousHTML html={data.desc} />
+    </Styled.Content>
   );
 };
 

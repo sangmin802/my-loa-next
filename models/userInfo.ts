@@ -3,6 +3,7 @@ import BasicInfo from "./basicInfo";
 import ExpeditionInfo from "./expeditionInfo";
 import CollectionInfo from "./collectionInfo";
 import SkillInfo from "./skillInfo";
+import { returnBody } from "utils/parse-string";
 
 interface Props {
   basicInfo: BasicInfo;
@@ -10,6 +11,7 @@ interface Props {
   abilityInfo: AbilityInfo;
   skillInfo: SkillInfo;
   collectionInfo: CollectionInfo;
+  memberArr: string[];
 }
 
 export default class UserInfo implements Props {
@@ -18,31 +20,42 @@ export default class UserInfo implements Props {
   abilityInfo: AbilityInfo;
   skillInfo: SkillInfo;
   collectionInfo: CollectionInfo;
+  memberArr: string[];
 
   // 생성자
-  constructor(raw, expedition, userCollection) {
+  constructor(data) {
+    const body: Element = returnBody(data);
+    const expedition: Element = body.getElementsByClassName(
+      "myinfo__character--wrapper2"
+    )[0];
+    const script = body.getElementsByTagName("script");
+
     // 스킬정보와 장비정보를 갖고있는 객체 반환
-    const profileObj = this.getProfileObj(raw) ?? null;
+    const profileObj = this.getProfileObj(script) ?? null;
 
     // 유저 기본정보 설정
-    this.basicInfo = new BasicInfo(raw);
+    this.basicInfo = new BasicInfo(body);
 
     // 모험단 유저
-    this.expeditionInfo = new ExpeditionInfo(raw, expedition);
+    this.expeditionInfo = new ExpeditionInfo(body, expedition);
 
     // 유저 능력치 탭
-    this.abilityInfo = new AbilityInfo(profileObj, raw);
+    this.abilityInfo = new AbilityInfo(profileObj, body);
 
     // 유저 스킬 탭
-    this.skillInfo = new SkillInfo(profileObj, raw);
+    this.skillInfo = new SkillInfo(profileObj, body);
 
-    // 유저 수집형 탭
-    // const [collection] = _PA; // PromiseAll일 경우
-    this.collectionInfo = new CollectionInfo(userCollection);
+    this.memberArr = this.member(script);
   }
 
-  getProfileObj(raw) {
-    const script = raw.getElementsByTagName("script");
+  member(script) {
+    const [, memberNo, , pcId, , worldNo] =
+      script[10]?.textContent?.split("'") ?? null;
+
+    return [memberNo, pcId, worldNo];
+  }
+
+  getProfileObj(script) {
     const script0 = script[0];
 
     if (script0.childNodes[0].textContent.length !== 1) {

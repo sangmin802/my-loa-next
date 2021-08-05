@@ -26,7 +26,7 @@ export const useTimerType = (time, endTime, setTime) => {
       let gap = Math.ceil((closeTime - now.getTime()) / 1000) * 1000;
 
       // 자정 이후
-      if (gap < -1000) {
+      if (gap < -10000) {
         gap =
           Math.ceil((closeTime + additionalTime - now.getTime()) / 1000) * 1000;
       }

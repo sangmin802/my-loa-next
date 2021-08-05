@@ -1,34 +1,28 @@
 import React, { PropsWithChildren } from "react";
-import ServerChar from "../char/index";
+import Char from "../char/index";
 import * as Styled from "./index.style";
-import { Text } from "components/";
+import { Text, MapContainer } from "components/";
 
-interface IWrap {
+interface IData {
   server: string;
   charList: any[];
 }
 
 interface IServer<T> {
-  wrap: T;
+  data?: T;
 }
 
-const Server = ({ wrap }: PropsWithChildren<IServer<IWrap>>) => {
-  return (
-    <>
-      <Styled.Title>
-        <Text>{wrap.server}</Text>
-      </Styled.Title>
-      <Styled.InnerContainer>
-        {wrap.charList.map((char, charIndex) => {
-          return (
-            <Styled.Content key={`userExpeditionChar${charIndex}`}>
-              <ServerChar char={char} />
-            </Styled.Content>
-          );
-        })}
-      </Styled.InnerContainer>
-    </>
-  );
-};
+const Server = ({ data }: PropsWithChildren<IServer<IData>>) => (
+  <Styled.Server>
+    <Styled.Title>
+      <Text>{data.server}</Text>
+    </Styled.Title>
+    <Styled.InnerContainer>
+      <MapContainer data={data.charList}>
+        <Char />
+      </MapContainer>
+    </Styled.InnerContainer>
+  </Styled.Server>
+);
 
 export default Server;

@@ -1,28 +1,30 @@
-import { PropsWithChildren, ReactElement, useCallback } from "react";
+import React, { PropsWithChildren, ReactElement, ReactNode } from "react";
 import { useQueryErrorResetBoundary } from "react-query";
 import { ErrorBoundary, CustomSuspense } from "components/";
+import Lodash from "lodash";
 
 interface IAsyncBoundary {
-  suspenseFallback: ReactElement;
+  suspenseFallback: ReactNode;
   errorFallback: ReactElement;
   children: ReactElement;
+  keys?: any;
 }
 
 const AsyncBoundary = ({
   suspenseFallback,
   errorFallback,
   children,
+  keys,
 }: PropsWithChildren<IAsyncBoundary>) => {
   const { reset } = useQueryErrorResetBoundary();
-  const resetHandler = useCallback(() => {
-    reset();
-  }, [reset]);
 
   return (
-    <ErrorBoundary resetQuery={resetHandler} errorFallback={errorFallback}>
+    <ErrorBoundary resetQuery={reset} errorFallback={errorFallback} keys={keys}>
       <CustomSuspense fallback={suspenseFallback}>{children}</CustomSuspense>
     </ErrorBoundary>
   );
 };
 
-export default AsyncBoundary;
+export default React.memo(AsyncBoundary, (left, right) =>
+  Lodash.isEqual(left, right)
+);

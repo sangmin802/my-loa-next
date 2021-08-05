@@ -16,7 +16,7 @@ interface IData {
 
 interface ITimer<T> {
   setTime: (T: string) => void;
-  data: T;
+  data?: T;
 }
 
 const Timer = ({ setTime, data }: PropsWithChildren<ITimer<IData>>) => {

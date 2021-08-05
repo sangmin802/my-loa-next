@@ -8,7 +8,7 @@ interface IData {
 }
 
 interface IDoubleListContainer<T> {
-  data: T[];
+  data?: T[];
   divideType: string;
   lt?: null | string;
   rt?: null | string;

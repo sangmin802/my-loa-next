@@ -1,6 +1,6 @@
-import React, { cloneElement } from "react";
+import React from "react";
 import Head from "next/head";
-import { Header } from "components/";
+import { Header } from "components/.";
 import * as Styled from "./index.style";
 import Lodash from "lodash";
 
@@ -18,21 +18,12 @@ function Layout({ children, title = "Loa-Hands", page }) {
         <meta name="description" content="Lostark 유저 검색 앱" />
       </Head>
       <Styled.Container>
-        {page === "userInfo" && <>{children}</>}
-        {page !== "userInfo" && <HeaderLayout>{children}</HeaderLayout>}
+        <Styled.HeaderContainer>
+          <Header />
+        </Styled.HeaderContainer>
+        <Styled.Main>{children}</Styled.Main>
       </Styled.Container>
     </>
-  );
-}
-
-export function HeaderLayout({ children, ...props }) {
-  return (
-    <Styled.InnerContainer>
-      <Styled.HeaderContainer>
-        <Header {...props} />
-      </Styled.HeaderContainer>
-      <Styled.Main>{cloneElement(children, { ...props })}</Styled.Main>
-    </Styled.InnerContainer>
   );
 }
 

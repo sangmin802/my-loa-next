@@ -5,6 +5,7 @@ import React, {
   useEffect,
 } from "react";
 import * as Styled from "./index.style";
+import Lodash from "lodash";
 
 interface IDialog {
   dialog: ReactElement;
@@ -12,46 +13,45 @@ interface IDialog {
 }
 
 const Dialog = ({ dialog, setDialog }: PropsWithChildren<IDialog>) => {
-  const closeDialog = useCallback(() => {
+  const handleCloseDialog = useCallback(() => {
     setDialog(null);
   }, [setDialog]);
 
+  const fixViewport = useCallback((body, top) => {
+    const style = `
+    position: fixed;
+    top: -${top}px;
+    left: 0px;
+    right: 0px;
+  `;
+    body.setAttribute("style", style);
+  }, []);
+
+  const resetViewport = useCallback((body, top) => {
+    body.setAttribute("style", "");
+    window.scrollTo(0, top);
+  }, []);
+
   useEffect(() => {
-    // body에 overflow-y hidden 주는방식은 ios에서 적용 안됨
     const body = document.querySelector("body");
     const top = window.pageYOffset;
-    if (dialog) {
-      const style = `
-        position: fixed;
-        top: -${top}px;
-        left: 0px;
-        right: 0px;
-      `;
-      body.setAttribute("style", style);
-    }
+
+    fixViewport(body, top);
+
     return () => {
-      if (dialog) {
-        body.setAttribute("style", "");
-        window.scrollTo(0, top);
-      }
+      resetViewport(body, top);
     };
-  }, [dialog]);
+  }, [dialog, fixViewport, resetViewport]);
 
   return (
     <>
-      {dialog && (
-        <>
-          <Styled.Background
-            onClick={closeDialog}
-            data-testid="close-dialog"
-          ></Styled.Background>
-          <Styled.Container data-testid="dialog-content">
-            {dialog}
-          </Styled.Container>
-        </>
-      )}
+      <Styled.Background
+        onClick={handleCloseDialog}
+        data-testid="close-dialog"
+      />
+      <Styled.Container data-testid="dialog-content">{dialog}</Styled.Container>
     </>
   );
 };
 
-export default Dialog;
+export default React.memo(Dialog, (left, right) => Lodash.isEqual(left, right));

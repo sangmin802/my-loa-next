@@ -5,8 +5,8 @@ interface ItemPartBox {
   desc: string;
 }
 interface IndentStringGroup {
-  title: { val: string; active: number | null };
-  desc: { val: string; active: number | null }[];
+  title: string;
+  desc: string[];
 }
 interface TripodSkillCustom {
   name: string;
@@ -82,23 +82,16 @@ export default class EquipInfo implements Props {
     //  c?Active = 활성화 or 비활성화
     IndentStringGroup?.forEach(res => {
       Object.values(res.value).forEach(({ topStr, contentStr: c1 }) => {
-        let active = null;
-        if (topStr.includes("#aaaaaa")) active = 0;
-        if (topStr.includes("#aaaaaa'><FONT COLOR='")) active = null;
         // 제목
         const title = topStr;
         let desc = [];
         // 값
 
         Object.values(c1).forEach(({ contentStr: c2 }) => {
-          let active = null;
-          if (c2.includes("#aaaaaa")) active = 0;
-          if (c2.includes("#aaaaaa'><FONT COLOR='")) active = null;
-          const val = c2;
-          desc.push({ val, active });
+          desc.push(c2);
         });
 
-        this.indentStringGroup.push({ title: { val: title, active }, desc });
+        this.indentStringGroup.push({ title, desc });
       });
     });
 

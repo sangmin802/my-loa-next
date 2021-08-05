@@ -12,7 +12,7 @@ const ErrorFallback = ({
   resetBoundary,
 }: Partial<PropsWithChildren<IErrorFallback>>) => {
   return (
-    <>
+    <Styled.ErrorFallback>
       <Styled.TextContainer data-testid="error-message">
         <Text>{error.message}</Text>
       </Styled.TextContainer>
@@ -24,7 +24,7 @@ const ErrorFallback = ({
       <Styled.ImageContainer>
         <Image src="/img/emoticon_3.gif" />
       </Styled.ImageContainer>
-    </>
+    </Styled.ErrorFallback>
   );
 };
 
