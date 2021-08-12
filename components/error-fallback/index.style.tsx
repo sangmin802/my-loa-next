@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ErrorFallback = styled.section`
-  background: ${({ theme }) => theme.backgroundColor.darkDeep};
+  padding: 2rem 0;
 `;
 
 export const ImageContainer = styled.div`
