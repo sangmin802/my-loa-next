@@ -1,5 +1,4 @@
-import React, { PropsWithChildren } from "react";
-import Lodash from "lodash";
+import React from "react";
 import { DangerousHTML, Text, MapContainer } from "../";
 import * as Styled from "./index.style";
 
@@ -17,9 +16,7 @@ interface ICharacteristic<T> {
   data?: T;
 }
 
-const Chararteristic = <T extends IData>({
-  data,
-}: PropsWithChildren<ICharacteristic<T>>) => {
+const Chararteristic = <T extends IData>({ data }: ICharacteristic<T>) => {
   return (
     <Styled.Container key={data.title}>
       <Styled.Title>
@@ -36,7 +33,7 @@ interface IItem<T> {
   data?: T;
 }
 
-const Item = <T extends IContent>({ data }: PropsWithChildren<IItem<T>>) => {
+const Item = <T extends IContent>({ data }: IItem<T>) => {
   return (
     <Styled.Item key={data.title[0]}>
       <Styled.Title type="itemTitle">
@@ -49,6 +46,4 @@ const Item = <T extends IContent>({ data }: PropsWithChildren<IItem<T>>) => {
   );
 };
 
-export default React.memo(Chararteristic, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(Chararteristic);

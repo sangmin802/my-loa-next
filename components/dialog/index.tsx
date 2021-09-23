@@ -1,18 +1,12 @@
-import React, {
-  PropsWithChildren,
-  ReactElement,
-  useCallback,
-  useEffect,
-} from "react";
+import React, { ReactElement, useCallback, useEffect } from "react";
 import * as Styled from "./index.style";
-import Lodash from "lodash";
 
 interface IDialog {
   dialog: ReactElement;
   setDialog: (T: null) => void;
 }
 
-const Dialog = ({ dialog, setDialog }: PropsWithChildren<IDialog>) => {
+const Dialog = ({ dialog, setDialog }: IDialog) => {
   const handleCloseDialog = useCallback(() => {
     setDialog(null);
   }, [setDialog]);
@@ -41,7 +35,7 @@ const Dialog = ({ dialog, setDialog }: PropsWithChildren<IDialog>) => {
     return () => {
       resetViewport(body, top);
     };
-  }, [dialog, fixViewport, resetViewport]);
+  }, [fixViewport, resetViewport]);
 
   return (
     <>
@@ -54,4 +48,4 @@ const Dialog = ({ dialog, setDialog }: PropsWithChildren<IDialog>) => {
   );
 };
 
-export default React.memo(Dialog, (left, right) => Lodash.isEqual(left, right));
+export default React.memo(Dialog);

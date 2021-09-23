@@ -1,6 +1,14 @@
 import EquipInfo from "./equipInfo";
 import Characteristic from "./characteristic";
-import { PARTS_ARR, PARTS_IMAGE } from "../json/json";
+import {
+  PARTS_ARR,
+  PARTS_IMAGE,
+  GEM_ARR,
+  BADGE_ARR,
+  BADGE_IMAGE,
+  GEM_IMAGE,
+} from "json/equip";
+import { ENGRAVE } from "json/engrave";
 
 interface PartDetail {
   [key: string]: {
@@ -13,6 +21,8 @@ interface PartDetail {
 interface Equip {
   equipment: PartDetail;
   avatar: PartDetail;
+  gem: PartDetail;
+  badge: PartDetail;
 }
 
 interface Props {
@@ -24,14 +34,18 @@ export default class AbilityInfo implements Props {
   equipInfo: Equip = {
     equipment: {},
     avatar: {},
+    gem: {},
+    badge: {},
   };
   characteristicInfo: Characteristic;
+  engrave = new Map();
+  gem = {};
 
   constructor(profileObj, raw) {
     PARTS_ARR.forEach((part, index) => {
       if (!part) return;
-      const type = index < 12 || index > 22 ? "equipment" : "avatar";
       let divideType = null;
+      let type = index === 26 || index < 12 ? "equipment" : "avatar";
 
       if (index === 26) divideType = "wristband";
       if (index <= 22) divideType = "outerAv";
@@ -45,23 +59,93 @@ export default class AbilityInfo implements Props {
       };
     });
 
+    GEM_ARR.forEach(part => {
+      this.equipInfo["gem"][part] = {
+        backSrc: "//cdn-lostark.game.onstove.com/" + GEM_IMAGE,
+        divideType: "gem",
+      };
+    });
+
+    BADGE_ARR.forEach(part => {
+      this.equipInfo["badge"][part] = {
+        backSrc: "//cdn-lostark.game.onstove.com/" + BADGE_IMAGE,
+        divideType: "badge",
+      };
+    });
+
     // 장비정보가 있는경우만
-    if (profileObj) this.setUserInfoEquip(profileObj.Equip, PARTS_ARR);
+    this.setUserInfoEquip(profileObj?.Equip);
 
     // 특성설정(각인, 특성)
     const characteristic = raw.querySelector(".profile-char");
+    this.setDefaultEngrave(profileObj?.Engrave);
     this.characteristicInfo = new Characteristic(characteristic);
   }
 
-  setUserInfoEquip(equip, partsArr: string[]) {
+  setUserInfoEquip(equip) {
+    if (!equip) return;
     const equipKeyArr = Object.keys(equip);
     equipKeyArr.forEach((key: string) => {
       const num = Number(key.substr(key.length - 3, key.length));
-      const type = num < 12 || num > 22 ? "equipment" : "avatar";
-      if (partsArr[num]) {
-        const target = this.equipInfo[type][partsArr[num]];
-        target.detail = new EquipInfo(equip[key], num);
+      let type = null;
+      let array = PARTS_ARR;
+      if (num <= 22) type = "avatar";
+      if (num === 26 || num <= 11) type = "equipment";
+      if (num >= 27) {
+        type = "badge";
+        array = BADGE_ARR;
       }
+      if (key.includes("Gem")) {
+        type = "gem";
+        array = GEM_ARR;
+      }
+      if (!array[num]) return;
+
+      const target = this.equipInfo[type][array[num]];
+      target.detail = new EquipInfo(
+        equip[key],
+        num,
+        this.setEngrave.bind(this),
+        target.divideType
+      );
     });
+  }
+
+  setEngrave(name, size) {
+    const engrave = this.engrave.get(name);
+    const newSize = engrave ? engrave.size + size * 1 : size * 1;
+    const grade = this.setEngraveGrade(newSize);
+    const detail = ENGRAVE[name];
+
+    this.engrave.set(name, {
+      ...engrave,
+      ...detail,
+      name,
+      src: `/img/engrave/${detail.no}.png`,
+      size: newSize,
+      grade,
+    });
+  }
+
+  setEngraveGrade(size) {
+    if (size < 5) return 0;
+    if (size < 10) return 1;
+    if (size < 15) return 2;
+    return 3;
+  }
+
+  setDefaultEngrave(engraves) {
+    if (!engraves) return;
+    Object.values(engraves).forEach((engrave: any) => {
+      const name = engrave.Element_000.value;
+      const size = this.engraveExtraction(engrave.Element_002.value);
+      this.setEngrave(name, size);
+    });
+  }
+
+  engraveExtraction(str) {
+    const regexp = new RegExp("(.*?'>)(\\d*)(</FONT>만큼 부여합니다.)");
+    const [, , size] = str.match(regexp);
+    return size;
   }
 }

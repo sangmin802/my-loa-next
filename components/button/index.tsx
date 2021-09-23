@@ -1,13 +1,7 @@
-import React, {
-  ButtonHTMLAttributes,
-  PropsWithChildren,
-  ReactNode,
-} from "react";
+import React, { ButtonHTMLAttributes, PropsWithChildren } from "react";
 import * as Styled from "./index.style";
 
-export interface IButton extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
+export interface IButton extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const Button = ({ children, ...props }: PropsWithChildren<IButton>) => (
   <Styled.Button {...props}>{children}</Styled.Button>

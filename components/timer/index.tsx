@@ -1,34 +1,76 @@
-import React, { PropsWithChildren } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useTimer } from "hooks/use-timer";
-import { useTimerType } from "hooks/use-timer-type";
+import { useConditionalTimer } from "hooks/use-conditional-timer";
 import { Text, Image } from "components/";
+import { interval } from "utils/events/interval";
 import * as Styled from "./index.style";
 
-interface IData {
-  name: string;
-  src: string;
-  lv: string;
-  time: string;
-  endTime: string;
-  position: string;
-  endPosition: string;
-}
-
-interface ITimer<T> {
+interface ITimer {
   setTime: (T: string) => void;
-  data?: T;
+  data?: {
+    name: string;
+    src: string;
+    lv: string;
+    time: string;
+    endTime: string;
+    position: string;
+    endPosition: string;
+  };
+  notification?;
 }
 
-const Timer = ({ setTime, data }: PropsWithChildren<ITimer<IData>>) => {
+const Timer = ({ setTime, data, notification }: ITimer) => {
   const { name, src, lv, time, endTime, position, endPosition } = data;
   const pos =
     typeof position !== "string" ? position[0] || endPosition : position;
-  const {
-    timerVariable: { borderColor, contentAlert, endTimeBg },
-    calcTimer,
-  } = useTimerType(time, endTime, setTime);
 
-  const timeOut = useTimer(time, calcTimer);
+  const [restTime, calcTimer, calcRestTimeProps] = useTimer();
+  const [
+    { borderColor, endTimeBg, contentAlert },
+    calcConditionalRestTime,
+    calcCloseTime,
+    setTimerType,
+    timerType,
+  ] = useConditionalTimer(time, endTime, setTime);
+
+  const timer = useCallback(
+    time => {
+      const now = new Date();
+      const startTime = time[0] ?? null;
+      const closeTime = calcCloseTime(startTime, now);
+      const restTime = startTime ? calcTimer(closeTime) : null;
+      const conditionalRestTime = calcConditionalRestTime(
+        closeTime,
+        now,
+        restTime
+      );
+      conditionalRestTime !== null
+        ? calcRestTimeProps(conditionalRestTime)
+        : calcRestTimeProps(null);
+    },
+    [setTime]
+  );
+
+  const { startInterval, endInterval } = useMemo(() => interval(1, timer), [
+    timer,
+  ]);
+
+  useEffect(() => {
+    if (time.length) startInterval(time);
+    if (!time.length) {
+      setTimerType("END");
+      setTime("종료");
+    }
+
+    return () => {
+      endInterval();
+    };
+  }, [time, startInterval, endInterval, setTimerType]);
+
+  useEffect(() => {
+    if (timerType === "READY") notification({ name, type: "READY" });
+    if (timerType === "START") notification({ name, type: "START" });
+  }, [name, notification, timerType]);
 
   return (
     <Styled.Container
@@ -52,7 +94,9 @@ const Timer = ({ setTime, data }: PropsWithChildren<ITimer<IData>>) => {
             {contentAlert}
           </Text>
           <Text type="subTitle" role="timeout" color="timeOut">
-            {timeOut}
+            {restTime
+              ? `${restTime.hour}:${restTime.min}:${restTime.sec}`
+              : "종료"}
           </Text>
         </Styled.Time>
       </Styled.Content>

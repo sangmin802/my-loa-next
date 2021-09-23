@@ -1,5 +1,4 @@
-import React, { PropsWithChildren } from "react";
-import Lodash from "lodash";
+import React from "react";
 import { DangerousHTML, MapContainer } from "../";
 import * as Styled from "./index.style";
 
@@ -12,7 +11,7 @@ interface IIndengString<T> {
   data?: T;
 }
 
-const IntentString = ({ data }: PropsWithChildren<IIndengString<IData>>) => {
+const IntentString = ({ data }: IIndengString<IData>) => {
   return (
     <Styled.Content>
       <DangerousHTML html={data.title} />
@@ -23,6 +22,4 @@ const IntentString = ({ data }: PropsWithChildren<IIndengString<IData>>) => {
   );
 };
 
-export default React.memo(IntentString, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(IntentString);

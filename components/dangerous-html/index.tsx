@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import * as Styled from "./index.style";
 
 interface IDangerousHTML {
   html?: string;
 }
 
-const DangerousHTML = ({ html }: PropsWithChildren<IDangerousHTML>) => {
+const DangerousHTML = ({ html }: IDangerousHTML) => {
   return <Styled.Container dangerouslySetInnerHTML={{ __html: html }} />;
 };
 

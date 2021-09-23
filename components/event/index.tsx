@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Image, Text } from "../";
 import * as Styled from "./index.style";
 
@@ -13,7 +13,7 @@ interface IEvent<T> {
   event?: T;
 }
 
-const Event = ({ event }: PropsWithChildren<IEvent<IData>>) => {
+const Event = ({ event }: IEvent<IData>) => {
   const { date, href, img, name } = event;
 
   const handleOpenEvent = useCallback(() => {
