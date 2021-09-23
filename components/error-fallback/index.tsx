@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { Text, Button, Image } from "components/";
 import * as Styled from "./index.style";
 
@@ -7,10 +7,7 @@ interface IErrorFallback {
   resetBoundary: () => void;
 }
 
-const ErrorFallback = ({
-  error,
-  resetBoundary,
-}: Partial<PropsWithChildren<IErrorFallback>>) => {
+const ErrorFallback = ({ error, resetBoundary }: Partial<IErrorFallback>) => {
   return (
     <Styled.ErrorFallback>
       <Styled.TextContainer data-testid="error-message">

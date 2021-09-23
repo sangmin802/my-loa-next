@@ -1,5 +1,4 @@
-import React, { PropsWithChildren, ReactElement, useCallback } from "react";
-import Lodash from "lodash";
+import React, { ReactElement, useCallback } from "react";
 import Server from "./server/index";
 import { Button, Text, MapContainer } from "components/";
 import * as Styled from "./index.style";
@@ -18,7 +17,7 @@ const UserExpedition = ({
   userData,
   setUserData,
   setDialog,
-}: PropsWithChildren<IUserExpedition<IUserData>>) => {
+}: IUserExpedition<IUserData>) => {
   const {
     expeditionInfo: { expeditionUserWrap },
   } = userData;
@@ -47,6 +46,4 @@ const UserExpedition = ({
   );
 };
 
-export default React.memo(UserExpedition, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(UserExpedition);
