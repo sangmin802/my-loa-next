@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from "react";
 import { useRouter } from "next/router";
 import * as Styled from "./index.style";
 import { Input, Button, Text } from "components/";
+import Lodash from "lodash";
 import { useQueryErrorResetBoundary } from "react-query";
 
 const Header = () => {
@@ -62,4 +63,4 @@ const Header = () => {
   );
 };
 
-export default React.memo(Header);
+export default React.memo(Header, (left, right) => Lodash.isEqual(left, right));

@@ -1,12 +1,15 @@
-import React, { ReactElement, useMemo } from "react";
+import React, { PropsWithChildren, ReactElement, useMemo } from "react";
 import { ListContainer } from "../";
+import Lodash from "lodash";
 import * as Styled from "./index.style";
 
-interface IDoubleListContainer {
-  data?: {
-    divideType: string;
-  }[];
-  divideType?: string;
+interface IData {
+  divideType: string;
+}
+
+interface IDoubleListContainer<T> {
+  data?: T[];
+  divideType: string;
   lt?: null | string;
   rt?: null | string;
   children: ReactElement;
@@ -14,19 +17,15 @@ interface IDoubleListContainer {
 
 const DoubleListContainer = ({
   data,
-  divideType = null,
+  divideType,
   lt = null,
   rt = null,
   children,
-}: IDoubleListContainer) => {
+}: PropsWithChildren<IDoubleListContainer<IData>>) => {
   const [left, right] = useMemo(() => {
     return data.reduce(
-      (prev, cur, i) => {
-        const condition = divideType
-          ? cur.divideType.includes(divideType)
-          : i % 2 === 0;
-
-        if (condition) {
+      (prev, cur) => {
+        if (cur.divideType.includes(divideType)) {
           prev[0].push(cur);
         } else {
           prev[1].push(cur);
@@ -53,4 +52,6 @@ const DoubleListContainer = ({
   );
 };
 
-export default React.memo(DoubleListContainer);
+export default React.memo(DoubleListContainer, (left, right) =>
+  Lodash.isEqual(left, right)
+);

@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import { Header } from "components/.";
 import * as Styled from "./index.style";
+import Lodash from "lodash";
 
 function Layout({ children, title = "Loa-Hands", page }) {
   return (
@@ -26,4 +27,4 @@ function Layout({ children, title = "Loa-Hands", page }) {
   );
 }
 
-export default React.memo(Layout);
+export default React.memo(Layout, (left, right) => Lodash.isEqual(left, right));

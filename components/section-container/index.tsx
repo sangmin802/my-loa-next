@@ -1,8 +1,10 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, ReactElement } from "react";
+import Lodash from "lodash";
 import * as Styled from "./index.style";
 import { Text } from "components/";
 
 interface ISectionContainer {
+  children: ReactElement;
   title: string;
 }
 
@@ -20,4 +22,6 @@ const SectionContainer = ({
   );
 };
 
-export default React.memo(SectionContainer);
+export default React.memo(SectionContainer, (left, right) =>
+  Lodash.isEqual(left, right)
+);

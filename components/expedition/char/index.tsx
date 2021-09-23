@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Button, Text } from "components/";
 import * as Styled from "./index.style";
 
@@ -11,7 +11,7 @@ interface IChar<T> {
   data?: T;
 }
 
-const Char = ({ data }: IChar<IData>) => (
+const Char = ({ data }: PropsWithChildren<IChar<IData>>) => (
   <Styled.Container>
     <Button aria-label="expedition-char">
       <Text type="desc" data-name={data.name}>

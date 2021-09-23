@@ -1,5 +1,5 @@
 import { returnBody } from "../utils/parse-string";
-import { CALENDAR_ISLAND } from "../json/timer";
+import { CALENDAR_ISLAND } from "../json/json";
 import { addZero } from "utils/util";
 
 export interface Calendar {

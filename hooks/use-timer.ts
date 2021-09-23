@@ -1,35 +1,36 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { interval } from "utils/events/interval";
+import { addZero } from "utils/util";
 
-export function useTimer() {
-  const [restTime, setRestTimeProps] = useState(null);
+export const useTimer = (time, calcTimer) => {
+  const [timer, setState] = useState(null);
 
-  const calcTimer = useCallback(endTime => {
-    return Math.ceil((endTime - new Date().getTime()) / 1000) * 1000;
-  }, []);
+  const setTimer = useCallback(
+    time => {
+      const gap = calcTimer(time);
+      if (gap === null) return setState("종료");
+      const _sec = 1000;
+      const _min = _sec * 60;
+      const _hour = _min * 60;
+      const hour = Math.floor(gap / _hour);
+      const min = Math.floor((gap % _hour) / _min);
+      const sec = Math.floor((gap % _min) / _sec);
 
-  const calcRestTimeProps = useCallback(time => {
-    const _sec = 1000;
-    const _min = _sec * 60;
-    const _hour = _min * 60;
-    const hour = Math.floor(time / _hour);
-    const min = Math.floor((time % _hour) / _min);
-    const sec = Math.floor((time % _min) / _sec);
+      setState(`${addZero(hour)}:${addZero(min)}:${addZero(sec)}`);
+    },
+    [setState, calcTimer]
+  );
 
-    time !== null
-      ? setRestTimeProps({
-          hour: addZero(hour),
-          min: addZero(min),
-          sec: addZero(sec),
-        })
-      : setRestTimeProps(null);
-  }, []);
+  const { startInterval, endInterval } = useMemo(() => {
+    return interval(1, setTimer);
+  }, [setTimer]);
 
-  return [restTime, calcTimer, calcRestTimeProps];
-}
+  useEffect(() => {
+    startInterval(time);
+    return () => {
+      endInterval();
+    };
+  }, [time, startInterval, endInterval]);
 
-function addZero(num) {
-  if (num < 10) {
-    return "0" + num;
-  }
-  return num;
-}
+  return timer;
+};

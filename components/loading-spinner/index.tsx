@@ -1,9 +1,9 @@
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, PropsWithChildren } from "react";
 import * as Styled from "./index.style";
 
 interface ILoadingSpinner extends HTMLAttributes<HTMLElement> {}
 
-const LoadingSpinner = ({ ...props }: ILoadingSpinner) => {
+const LoadingSpinner = ({ ...props }: PropsWithChildren<ILoadingSpinner>) => {
   return (
     <Styled.Content {...props}>
       <div></div>

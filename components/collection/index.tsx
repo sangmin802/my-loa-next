@@ -1,6 +1,7 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { DoubleListContainer } from "components/";
 import ListItem from "components/list-item";
+import Lodash from "lodash";
 
 interface ICollection {
   data;
@@ -11,7 +12,7 @@ interface ICollection {
   };
 }
 
-const Collection = ({ data, mini }: ICollection) => {
+const Collection = ({ data, mini }: PropsWithChildren<ICollection>) => {
   const lt = mini.title;
   const rt = `획득 : ${mini.getCount} 총 : ${mini.totalCount}`;
   return (
@@ -21,4 +22,6 @@ const Collection = ({ data, mini }: ICollection) => {
   );
 };
 
-export default React.memo(Collection);
+export default React.memo(Collection, (left, right) =>
+  Lodash.isEqual(left, right)
+);

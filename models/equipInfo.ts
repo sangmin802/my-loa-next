@@ -38,7 +38,7 @@ export default class EquipInfo implements Props {
   indentStringGroup: IndentStringGroup[] = [];
   tripodSkillCustom: TripodSkillCustom[] = [];
 
-  constructor(data, num, public setEngrave, type) {
+  constructor(data, num) {
     const v = Object.values(data);
     const NameTagBox = this.findType(v, "NameTagBox"); // 아이템 이름
     const ItemTitle = this.findType(v, "ItemTitle"); // 아이템 세부 설명
@@ -72,18 +72,11 @@ export default class EquipInfo implements Props {
     // 텍스트 그룹 여러개의 구조
     ItemPartBox?.forEach(res => {
       const els: string[] = Object.values(res.value);
-
       this.itemPartBox.push({
         title: els[0],
         desc: num === 26 ? this.wristbandSrcReaplce(els[1]) : els[1],
       });
     });
-
-    if (type === "acc" || type === "stone") {
-      this.engraveExtraction(
-        Object.values(ItemPartBox[ItemPartBox.length - 1].value)[1]
-      );
-    }
 
     // 텍스트 그룹이 여러개 있고, 각각의 타이틀을 갖고있는 구조
     //  c?Active = 활성화 or 비활성화
@@ -121,11 +114,9 @@ export default class EquipInfo implements Props {
   filterType(arr, type) {
     return arr.filter(res => res.type === type);
   }
-
   findType(arr, type) {
     return arr.find(res => res.type === type);
   }
-
   wristbandSrcReaplce(str) {
     return str
       .replace(
@@ -136,14 +127,5 @@ export default class EquipInfo implements Props {
         /emoticon_tooltip_bracelet_changeable/gi,
         "https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/game/ico_tooltip_changeable.png"
       );
-  }
-
-  engraveExtraction(str) {
-    const engraves = str.split("<BR>");
-    engraves.forEach(str => {
-      const regexp = new RegExp("(.*?'>)(.*?)(</FONT>] 활성도 \\+)(\\d*)");
-      const [, , name, , size] = str.match(regexp);
-      this.setEngrave(name, size);
-    });
   }
 }

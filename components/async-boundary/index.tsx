@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, ReactElement, ReactNode } from "react";
 import { useQueryErrorResetBoundary } from "react-query";
 import { ErrorBoundary, CustomSuspense } from "components/";
+import Lodash from "lodash";
 
 interface IAsyncBoundary {
   suspenseFallback: ReactNode;
@@ -24,4 +25,6 @@ const AsyncBoundary = ({
   );
 };
 
-export default AsyncBoundary;
+export default React.memo(AsyncBoundary, (left, right) =>
+  Lodash.isEqual(left, right)
+);

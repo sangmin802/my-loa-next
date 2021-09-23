@@ -1,6 +1,7 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Image, Text } from "../";
 import * as Styled from "./index.style";
+import Lodash from "lodash";
 
 interface IRune {
   data?: {
@@ -14,7 +15,7 @@ interface IRune {
   };
 }
 
-const Rune = ({ data }: IRune) => {
+const Rune = ({ data }: PropsWithChildren<IRune>) => {
   const rune = data.detail.rune;
 
   if (!rune) return null;
@@ -41,4 +42,4 @@ const Rune = ({ data }: IRune) => {
   );
 };
 
-export default React.memo(Rune);
+export default React.memo(Rune, (left, right) => Lodash.isEqual(left, right));

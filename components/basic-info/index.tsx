@@ -1,4 +1,5 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
+import Lodash from "lodash";
 import { Image, Text } from "../";
 import * as Styled from "./index.styles";
 
@@ -11,7 +12,9 @@ interface IBasicInfo<T> {
   userData: T;
 }
 
-const BasicInfo = <T extends IUserData>({ userData }: IBasicInfo<T>) => {
+const BasicInfo = <T extends IUserData>({
+  userData,
+}: PropsWithChildren<IBasicInfo<T>>) => {
   const { basicInfo, expeditionInfo } = userData;
   const {
     className,
@@ -123,4 +126,6 @@ const BasicInfo = <T extends IUserData>({ userData }: IBasicInfo<T>) => {
   );
 };
 
-export default React.memo(BasicInfo);
+export default React.memo(BasicInfo, (left, right) =>
+  Lodash.isEqual(left, right)
+);

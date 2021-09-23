@@ -26,8 +26,6 @@ export const getUserData = async (name): Promise<UserInfo> => {
     const user: UserInfo = new UserInfo(data);
     return user;
   } catch (err) {
-    console.log(err);
-
     const message = err?.response?.data?.message ?? "네트워크 에러입니다.";
     throw new Error(message);
   }

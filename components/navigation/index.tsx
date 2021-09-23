@@ -1,4 +1,10 @@
-import React, { ReactElement, useCallback, useMemo } from "react";
+import React, {
+  PropsWithChildren,
+  ReactElement,
+  useCallback,
+  useMemo,
+} from "react";
+import Lodash from "lodash";
 import { Button, Text, MapContainer } from "components/";
 import * as Styled from "./index.style";
 
@@ -15,7 +21,11 @@ interface INavigation {
   arr?: (string | ReactElement)[];
 }
 
-const Navigation = ({ arr, selectedNav, setNav }: INavigation) => {
+const Navigation = ({
+  arr,
+  selectedNav,
+  setNav,
+}: PropsWithChildren<INavigation>) => {
   return (
     <Styled.Container>
       <MapContainer data={arr} dataKey="navName">
@@ -25,7 +35,12 @@ const Navigation = ({ arr, selectedNav, setNav }: INavigation) => {
   );
 };
 
-export const Item = ({ navName, setNav, selectedSub, i }: IItem) => {
+export const Item = ({
+  navName,
+  setNav,
+  selectedSub,
+  i,
+}: PropsWithChildren<IItem>) => {
   const handleNavigation = useCallback(() => {
     setNav(i);
   }, [i, setNav]);
@@ -41,4 +56,6 @@ export const Item = ({ navName, setNav, selectedSub, i }: IItem) => {
   );
 };
 
-export default React.memo(Navigation);
+export default React.memo(Navigation, (left, right) =>
+  Lodash.isEqual(left, right)
+);

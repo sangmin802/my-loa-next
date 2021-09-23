@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import Char from "../char/index";
 import * as Styled from "./index.style";
 import { Text, MapContainer } from "components/";
@@ -12,7 +12,7 @@ interface IServer<T> {
   data?: T;
 }
 
-const Server = ({ data }: IServer<IData>) => (
+const Server = ({ data }: PropsWithChildren<IServer<IData>>) => (
   <Styled.Server>
     <Styled.Title>
       <Text>{data.server}</Text>

@@ -1,15 +1,18 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
+import Lodash from "lodash";
 import { DangerousHTML } from "../";
 import * as Styled from "./index.style";
 
-interface IItemPartBox {
-  data?: {
-    title: string;
-    desc: string;
-  };
+interface IData {
+  title: string;
+  desc: string;
 }
 
-const ItemPartBox = ({ data }: IItemPartBox) => {
+interface IItemPartBox<T> {
+  data?: T;
+}
+
+const ItemPartBox = ({ data }: PropsWithChildren<IItemPartBox<IData>>) => {
   return (
     <Styled.Content>
       <DangerousHTML html={data.title} />
@@ -18,4 +21,6 @@ const ItemPartBox = ({ data }: IItemPartBox) => {
   );
 };
 
-export default React.memo(ItemPartBox);
+export default React.memo(ItemPartBox, (left, right) =>
+  Lodash.isEqual(left, right)
+);

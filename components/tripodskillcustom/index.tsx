@@ -1,17 +1,22 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
+import Lodash from "lodash";
 import { DangerousHTML, Image } from "../";
 import * as Styled from "./index.style";
 
-interface ITripodSkillCustom {
-  data?: {
-    name: null | string;
-    desc: null | string;
-    grade: null | string;
-    src: null | string;
-  };
+interface IData {
+  name: null | string;
+  desc: null | string;
+  grade: null | string;
+  src: null | string;
 }
 
-const TripodSkillCustom = ({ data }: ITripodSkillCustom) => {
+interface ITripodSkillCustom<T> {
+  data?: T;
+}
+
+const TripodSkillCustom = ({
+  data,
+}: PropsWithChildren<ITripodSkillCustom<IData>>) => {
   const { name = null, desc = null, grade = null, src = null } = data;
 
   return (
@@ -29,4 +34,6 @@ const TripodSkillCustom = ({ data }: ITripodSkillCustom) => {
   );
 };
 
-export default React.memo(TripodSkillCustom);
+export default React.memo(TripodSkillCustom, (left, right) =>
+  Lodash.isEqual(left, right)
+);
