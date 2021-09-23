@@ -1,17 +1,14 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import * as Styled from "./index.style";
 import { Text } from "components/";
-import Lodash from "lodash";
 
-interface IData {
-  detail: { quality: number };
+interface IQuality {
+  data?: {
+    detail: { quality: number };
+  };
 }
 
-interface IQuality<T> {
-  data?: T;
-}
-
-const Quality = ({ data }: PropsWithChildren<IQuality<IData>>) => {
+const Quality = ({ data }: IQuality) => {
   const { quality } = data.detail;
 
   if (quality === -1) return null;
@@ -35,6 +32,4 @@ const Quality = ({ data }: PropsWithChildren<IQuality<IData>>) => {
   );
 };
 
-export default React.memo(Quality, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(Quality);

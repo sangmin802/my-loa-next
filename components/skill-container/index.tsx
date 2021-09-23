@@ -1,35 +1,27 @@
-import React, { PropsWithChildren, ReactElement } from "react";
+import React, { ReactElement, useMemo } from "react";
 import {
-  VisibleContainer,
   DoubleListContainer,
   ListItem,
   DetailContent,
   Rune,
 } from "components/";
-import Lodash from "lodash";
 
-interface IUserData {
-  skillInfo: {
-    battleSkill;
-    lifeSkill;
+interface ISkillContainer {
+  userData: {
+    skillInfo: {
+      battleSkill;
+      lifeSkill;
+    };
   };
-}
-
-interface ISkillContainer<T> {
-  userData: T;
   subNav: number;
   setDialog(T: ReactElement): void;
 }
 
-const SkillContainer = ({
-  userData,
-  subNav,
-  setDialog,
-}: PropsWithChildren<ISkillContainer<IUserData>>) => {
+const SkillContainer = ({ userData, subNav, setDialog }: ISkillContainer) => {
   const { battleSkill = null, lifeSkill } = userData.skillInfo;
 
-  return (
-    <VisibleContainer selected={subNav}>
+  const memoized = useMemo(() => {
+    return [
       <DoubleListContainer
         lt={`사용 : ${battleSkill.usePoint}`}
         rt={`총 : ${battleSkill.getPoint}`}
@@ -41,14 +33,14 @@ const SkillContainer = ({
             <Rune />
           </DetailContent>
         </ListItem>
-      </DoubleListContainer>
+      </DoubleListContainer>,
       <DoubleListContainer data={lifeSkill} divideType="leftSkill">
         <ListItem />
-      </DoubleListContainer>
-    </VisibleContainer>
-  );
+      </DoubleListContainer>,
+    ];
+  }, [userData]);
+
+  return <>{memoized[subNav]}</>;
 };
 
-export default React.memo(SkillContainer, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(SkillContainer);
