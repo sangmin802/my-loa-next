@@ -1,12 +1,6 @@
-import React, {
-  cloneElement,
-  PropsWithChildren,
-  ReactElement,
-  useCallback,
-} from "react";
-import { Image, Text, ConditionalContainer, MapContainer } from "components/";
+import React, { cloneElement, ReactElement, useCallback } from "react";
+import { Image, Text, MapContainer } from "components/";
 import * as Styled from "./index.style";
-import Lodash from "lodash";
 
 interface IDetail {
   src?: string;
@@ -16,29 +10,24 @@ interface IDetail {
   hover: boolean;
 }
 
-interface IData<T> {
+interface IData {
   backSrc?: string;
   type?: string;
-  detail: T;
+  detail: IDetail;
 }
 
-interface IListItem<T> {
+interface IListItem {
   children: ReactElement;
   setDialog: (T: ReactElement) => void;
-  data: T;
+  data: IData;
 }
 
-const ListItem = ({
-  data,
-  children,
-  setDialog,
-}: PropsWithChildren<Partial<IListItem<IData<IDetail>>>>) => {
+const ListItem = ({ data, children, setDialog }: Partial<IListItem>) => {
   const { backSrc, detail } = data;
 
   const setDialogHandler = useCallback(() => {
     if (!detail?.hover) return;
-    const dialog = cloneElement(children, { data });
-    setDialog(dialog);
+    setDialog?.(children && cloneElement(children, { data }));
   }, [children, data, setDialog, detail]);
 
   return (
@@ -49,21 +38,17 @@ const ListItem = ({
       type={data.type}
     >
       <Image src={detail?.src ?? backSrc} color={`gradient${detail?.grade}`} />
-      <ConditionalContainer isRender={detail !== null}>
-        <Styled.Desc type={data.type}>
-          <MapContainer data={detail?.subTitle} dataKey="children">
-            <Text
-              color={detail?.grade ? `color${detail?.grade}` : "white"}
-              type="small"
-            />
-          </MapContainer>
-          <Text type="subTitle">{detail?.title}</Text>
-        </Styled.Desc>
-      </ConditionalContainer>
+      <Styled.Desc type={data.type}>
+        <MapContainer data={detail?.subTitle} dataKey="children">
+          <Text
+            color={detail?.grade ? `color${detail?.grade}` : "white"}
+            type="small"
+          />
+        </MapContainer>
+        <Text type="subTitle">{detail?.title}</Text>
+      </Styled.Desc>
     </Styled.Container>
   );
 };
 
-export default React.memo(ListItem, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(ListItem);

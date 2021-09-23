@@ -28,3 +28,16 @@ export const Content = styled.section<{ type?: string }>`
     }
   }
 `;
+
+export const Notification = styled.div`
+  width: fit-content;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.2rem 0.4rem;
+
+  ${({ theme }) => theme.contentBox};
+  background: ${({ theme }) => theme.backgroundColor.darkDeep};
+  border-radius: 3px 3px 3px 0;
+`;

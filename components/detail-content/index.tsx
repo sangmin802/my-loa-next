@@ -1,10 +1,4 @@
-import React, {
-  cloneElement,
-  PropsWithChildren,
-  ReactElement,
-  useMemo,
-} from "react";
-import Lodash from "lodash";
+import React, { cloneElement, ReactElement, useMemo } from "react";
 import {
   ItemPartBox,
   IndentString,
@@ -25,20 +19,17 @@ interface IDetail {
   tripodSkillCustom?: [];
 }
 
-interface IData<T> {
+interface IData {
   backSrc: string;
-  detail: T;
+  detail: IDetail;
 }
 
-interface IDetailContent<T> {
-  data: T;
+interface IDetailContent {
+  data: IData;
   children: ReactElement;
 }
 
-const DetailContent = ({
-  data,
-  children,
-}: PropsWithChildren<Partial<IDetailContent<IData<IDetail>>>>) => {
+const DetailContent = ({ data, children }: Partial<IDetailContent>) => {
   const { backSrc, detail } = data;
   const {
     src,
@@ -92,6 +83,4 @@ const DetailContent = ({
   );
 };
 
-export default React.memo(DetailContent, (left, right) =>
-  Lodash.isEqual(left, right)
-);
+export default React.memo(DetailContent);

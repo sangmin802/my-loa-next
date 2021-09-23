@@ -8,7 +8,7 @@ import {
   CHAOS_GATE,
   OCEAN_ACT,
   PHANTOM_SHIP,
-} from "json/json";
+} from "json/timer";
 import { useCalendar } from "hooks/use-calendar";
 import { useEvent } from "hooks/use-event";
 import {
@@ -19,13 +19,24 @@ import {
   AsyncBoundary,
   ErrorFallback,
   MapContainer,
+  Button,
+  Text,
 } from "components/";
 import Layout from "layout/index";
 import { interval } from "utils/events/interval";
 import * as Styled from "../styles/home.style";
-// import { getCalendarData, getEventData } from "api/api";
 import { useRouter } from "next/router";
 import { useCancelQuery } from "hooks/use-cancel-query";
+import { NotificationHandler } from "utils/events/notification";
+
+interface IFetchCalendar {
+  queryKey: string | (string | number)[];
+  isMidnight: Date;
+}
+
+interface IFetchEvent {
+  queryKey: string | (string | number)[];
+}
 
 const Home = ({ eventData = null, calendarData = null }) => {
   const history = useRouter();
@@ -51,6 +62,35 @@ const Home = ({ eventData = null, calendarData = null }) => {
     [updateTime]
   );
 
+  const createNotification = useCallback(works => {
+    const [start, ready] = works.reduce(
+      (prev, cur) => {
+        cur.type === "START" ? prev[0].push(cur) : prev[1].push(cur);
+        return prev;
+      },
+      [[], []]
+    );
+
+    const startBody = start.length
+      ? `\n시작 컨텐츠\n[${start[0].name}] 등 ${start.length}개`
+      : "";
+    const readyBody = ready.length
+      ? `\n준비 컨텐츠\n[${ready[0].name}] 등 ${ready.length}개`
+      : "";
+
+    return {
+      title: `Loa-Hands 알림`,
+      option: {
+        body: startBody + readyBody,
+      },
+    };
+  }, []);
+
+  const notification = useMemo(
+    () => new NotificationHandler(createNotification),
+    [createNotification]
+  );
+
   useEffect(() => {
     startInterval([setMidnight, setSix]);
     return () => {
@@ -74,6 +114,13 @@ const Home = ({ eventData = null, calendarData = null }) => {
     })(window.location);
   }, [history]);
 
+  useEffect(() => {
+    startInterval([setMidnight, setSix]);
+    return () => {
+      endInterval();
+    };
+  }, [endInterval, startInterval, setSix]);
+
   useCancelQuery(queryKey);
 
   return (
@@ -89,6 +136,11 @@ const Home = ({ eventData = null, calendarData = null }) => {
             </AsyncBoundary>
           </SectionContainer>
         </Styled.Section>
+        <Styled.Notification>
+          <Button onClick={notification.requestPermission}>
+            <Text>알림 활성화</Text>
+          </Button>
+        </Styled.Notification>
         <Styled.Section>
           <SectionContainer title="오늘의 캘린더섬">
             <AsyncBoundary
@@ -101,7 +153,10 @@ const Home = ({ eventData = null, calendarData = null }) => {
         </Styled.Section>
         <Styled.Section>
           <SectionContainer title="오늘의 모험섬">
-            <TimerContainer data={DAILY_ISLAND} />
+            <TimerContainer
+              data={DAILY_ISLAND}
+              notification={notification.activeNotification}
+            />
           </SectionContainer>
         </Styled.Section>
         <Styled.Section>
@@ -109,6 +164,7 @@ const Home = ({ eventData = null, calendarData = null }) => {
             <TimerContainer
               data={FIELD_BOSS[isSix.getDay()]}
               rerenderKey={isSix}
+              notification={notification.activeNotification}
             />
           </SectionContainer>
         </Styled.Section>
@@ -117,6 +173,7 @@ const Home = ({ eventData = null, calendarData = null }) => {
             <TimerContainer
               data={CHAOS_GATE[isSix.getDay()]}
               rerenderKey={isSix}
+              notification={notification.activeNotification}
             />
           </SectionContainer>
         </Styled.Section>
@@ -125,6 +182,7 @@ const Home = ({ eventData = null, calendarData = null }) => {
             <TimerContainer
               data={PHANTOM_SHIP[isSix.getDay()]}
               rerenderKey={isSix}
+              notification={notification.activeNotification}
             />
           </SectionContainer>
         </Styled.Section>
@@ -133,6 +191,7 @@ const Home = ({ eventData = null, calendarData = null }) => {
             <TimerContainer
               data={OCEAN_ACT[isSix.getDay()]}
               rerenderKey={isSix}
+              notification={notification.activeNotification}
             />
           </SectionContainer>
         </Styled.Section>
@@ -141,7 +200,10 @@ const Home = ({ eventData = null, calendarData = null }) => {
   );
 };
 
-const FetchCalendar = ({ queryKey, isMidnight }) => {
+const FetchCalendar = React.memo(function ({
+  queryKey,
+  isMidnight,
+}: IFetchCalendar) {
   const yoil = isMidnight.getDay();
   const calendarData = useCalendar(queryKey);
   const isWeek = 6 > yoil && yoil > 0;
@@ -162,9 +224,9 @@ const FetchCalendar = ({ queryKey, isMidnight }) => {
       </SectionContainer>
     </Styled.Section>
   );
-};
+});
 
-const FetchEvent = ({ queryKey }) => {
+const FetchEvent = React.memo(function ({ queryKey }: IFetchEvent) {
   const eventData = useEvent(queryKey);
 
   return (
@@ -174,7 +236,7 @@ const FetchEvent = ({ queryKey }) => {
       </MapContainer>
     </Styled.Content>
   );
-};
+});
 
 // export async function getServerSideProps() {
 //   try {
@@ -203,4 +265,4 @@ const FetchEvent = ({ queryKey }) => {
 //   }
 // );
 
-export default React.memo(Home, () => true);
+export default Home;

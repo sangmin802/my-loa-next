@@ -1,20 +1,12 @@
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BasicInfo,
   Expedition,
   Navigation,
-  VisibleContainer,
   Dialog,
   Button,
   Text,
   MapContainer,
-  ConditionalContainer,
   AbilityContainer,
   SkillContainer,
   AsyncBoundary,
@@ -29,6 +21,7 @@ import { useRouter } from "next/router";
 import { useUser } from "hooks/use-user";
 import { useUserCollection } from "hooks/use-user-collection";
 import { useCancelQuery } from "hooks/use-cancel-query";
+import { useNavigation } from "hooks/use-navigation";
 import * as Styled from "styles/user-info.style";
 
 interface IFetchUserCollection {
@@ -37,12 +30,17 @@ interface IFetchUserCollection {
   subNav: number;
 }
 
+interface IFetchUserInfo {
+  userKey: string[];
+  userCollectionKey: string[];
+}
+
 const UserInfo = () => {
   const { name } = useRouter().query;
   const [userKey, userCollectionKey] = useMemo(
     () => [
-      ["userInfo", name],
-      ["userCollection", name],
+      ["userInfo", name as string],
+      ["userCollection", name as string],
     ],
     [name]
   );
@@ -61,37 +59,19 @@ const UserInfo = () => {
   );
 };
 
-const FetchUserInfo = ({ userKey, userCollectionKey }) => {
+const FetchUserInfo = React.memo(function ({
+  userKey,
+  userCollectionKey,
+}: IFetchUserInfo) {
   const history = useRouter();
   const { status, data: userData } = useUser(userKey);
-  const [subNav, setSubNav] = useState(0);
-  const [mainNav, setMainNav] = useState(0);
+  const nav = useNavigation();
   const [dialog, setDialog] = useState(null);
 
-  const subNavs = useMemo(
-    () => [
-      ["착용 아이템", "착용 아바타", "특성·각인"],
-      ["전투스킬", "생활스킬"],
-      ["", "", "", "", "", "", "", ""],
-    ],
-    []
-  );
-
-  const mainNavs = useMemo(() => ["능력치", "스킬", "수집형포인트"], []);
-
-  const handleMainNavigation = useCallback(
-    index => {
-      setMainNav(index);
-      setSubNav(0);
-    },
-    [setMainNav, setSubNav]
-  );
-
   const handleResetState = useCallback(() => {
-    setMainNav(0);
-    setSubNav(0);
+    nav.handleResetNavigation();
     setDialog(null);
-  }, [setMainNav, setSubNav, setDialog]);
+  }, [nav.handleResetNavigation]);
 
   const handleSearchUser = useCallback(
     name => {
@@ -109,12 +89,39 @@ const FetchUserInfo = ({ userKey, userCollectionKey }) => {
         setDialog={setDialog}
       />
     ),
-    [userData, handleSearchUser, setDialog]
+    [userData, handleSearchUser]
   );
 
   const setExpeditionDialog = useCallback(() => {
     setDialog(expeditionDialog);
-  }, [setDialog, expeditionDialog]);
+  }, [expeditionDialog]);
+
+  const memoized = useMemo(() => {
+    if (!userData) return [, , ,];
+    return [
+      <AbilityContainer
+        userData={userData}
+        subNav={nav.subNav}
+        setDialog={setDialog}
+      />,
+      <SkillContainer
+        userData={userData}
+        subNav={nav.subNav}
+        setDialog={setDialog}
+      />,
+      <AsyncBoundary
+        suspenseFallback={<LoadingSpinner />}
+        errorFallback={<ErrorFallback />}
+        keys={userCollectionKey}
+      >
+        <FetchUserCollection
+          queryKey={userCollectionKey}
+          member={userData.memberArr}
+          subNav={nav.subNav}
+        />
+      </AsyncBoundary>,
+    ];
+  }, [userData, nav.subNav, userCollectionKey]);
 
   useEffect(() => {
     return () => {
@@ -126,9 +133,7 @@ const FetchUserInfo = ({ userKey, userCollectionKey }) => {
 
   return (
     <Styled.UserInfo data-testid={userData.expeditionInfo.name}>
-      <ConditionalContainer isRender={dialog !== null}>
-        <Dialog dialog={dialog} setDialog={setDialog} />
-      </ConditionalContainer>
+      {dialog && <Dialog dialog={dialog} setDialog={setDialog} />}
       <Styled.Top>
         <Styled.ButtonContainer>
           <Button onClick={setExpeditionDialog} data-testid="expedition-button">
@@ -140,64 +145,42 @@ const FetchUserInfo = ({ userKey, userCollectionKey }) => {
       <Styled.Bottom>
         <Styled.Navigation type="main">
           <Navigation
-            arr={mainNavs}
-            selectedNav={mainNav}
-            setNav={handleMainNavigation}
+            arr={nav.mainNavs}
+            selectedNav={nav.mainNav}
+            setNav={nav.handleMainNavigation}
           />
         </Styled.Navigation>
-        <Styled.Navigation type="sub" isShow={mainNav} selected={subNav}>
-          <MapContainer data={subNavs} dataKey="arr">
-            <Navigation selectedNav={subNav} setNav={setSubNav} />
+        <Styled.Navigation
+          type="sub"
+          isShow={nav.mainNav}
+          selected={nav.subNav}
+        >
+          <MapContainer data={nav.subNavs} dataKey="arr">
+            <Navigation selectedNav={nav.subNav} setNav={nav.setSubNav} />
           </MapContainer>
         </Styled.Navigation>
         <Styled.Container data-testid="content">
-          <VisibleContainer type="main" selected={mainNav}>
-            <AbilityContainer
-              userData={userData}
-              subNav={subNav}
-              setDialog={setDialog}
-            />
-            <SkillContainer
-              userData={userData}
-              subNav={subNav}
-              setDialog={setDialog}
-            />
-            <AsyncBoundary
-              suspenseFallback={<LoadingSpinner />}
-              errorFallback={<ErrorFallback />}
-              keys={userCollectionKey}
-            >
-              <FetchUserCollection
-                queryKey={userCollectionKey}
-                member={userData.memberArr}
-                subNav={subNav}
-              />
-            </AsyncBoundary>
-          </VisibleContainer>
+          {memoized[nav.mainNav]}
         </Styled.Container>
       </Styled.Bottom>
     </Styled.UserInfo>
   );
-};
+});
 
-const FetchUserCollection = ({
+const FetchUserCollection = React.memo(function ({
   queryKey,
   subNav,
   member,
-}: PropsWithChildren<IFetchUserCollection>) => {
+}: IFetchUserCollection) {
   const userCollection = useUserCollection(queryKey, member);
 
-  return (
-    <VisibleContainer selected={subNav}>
-      {userCollection.collectionDetail.map((data, i) => (
-        <Collection
-          data={data}
-          mini={userCollection.collectionMini[i]}
-          key={i}
-        />
-      ))}
-    </VisibleContainer>
-  );
-};
+  const memoized = useMemo(() => {
+    return userCollection.collectionDetail.map((data, i) => (
+      <Collection data={data} mini={userCollection.collectionMini[i]} key={i} />
+    ));
+  }, [userCollection]);
+
+  return <>{memoized[subNav]}</>;
+});
 
 export default UserInfo;
