@@ -1,6 +1,6 @@
 import React from "react";
 import TimerContainer from "./index";
-import { DAILY_ISLAND } from "json/json";
+import { DAILY_ISLAND } from "json/timer";
 
 export default {
   title: "TimerContainer",
